@@ -30,8 +30,11 @@ export default function Navbar() {
     "/contact",
     "/help",
     "/consumer-rights",
+    "/blog",
   ];
-  const isPublicPage = PUBLIC_PATHS.includes(pathname);
+  const isPublicPage =
+    PUBLIC_PATHS.includes(pathname) ||
+    pathname.startsWith("/blog");
 
   const handleLogout = async () => {
     await logout();
@@ -62,7 +65,30 @@ export default function Navbar() {
 
           {/* If on Public/Landing Pages */}
           {isPublicPage ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <nav className="hidden sm:flex items-center gap-1 md:gap-1.5 mr-1">
+                <Link
+                  href="/consumer-rights"
+                  className={`rounded-xl px-3 py-1.5 text-xs sm:text-sm font-medium transition ${
+                    pathname === "/consumer-rights"
+                      ? "text-slate-900 bg-slate-100 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  }`}
+                >
+                  Rights Guide
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`rounded-xl px-3 py-1.5 text-xs sm:text-sm font-medium transition ${
+                    pathname.startsWith("/blog")
+                      ? "text-slate-900 bg-slate-100 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  }`}
+                >
+                  Blog
+                </Link>
+              </nav>
+
               {user && user.email !== "demo@fixflow.app" ? (
                 <>
                   <Link

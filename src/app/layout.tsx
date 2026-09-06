@@ -5,7 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/components/AuthProvider";
 
-const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://fixflow.app";
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://getfixflow.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -199,6 +199,14 @@ export default function RootLayout({
                         className="inline-flex items-center text-xs sm:text-sm text-slate-600 hover:text-indigo-600 font-medium transition py-1 min-h-[36px]"
                       >
                         Consumer Rights Guide
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/blog"
+                        className="inline-flex items-center text-xs sm:text-sm text-slate-600 hover:text-indigo-600 font-medium transition py-1 min-h-[36px]"
+                      >
+                        Blog & Guides
                       </Link>
                     </li>
                     <li>
