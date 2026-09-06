@@ -122,19 +122,88 @@ export async function PATCH(
       data: updateData,
     });
 
-    // Automatically record event if status changed
+    // Record permanent history events so no call, message, note, or date change is lost
+    const eventsToRecord: { eventType: string; body: string }[] = [];
+
     if (statusChanged) {
+      eventsToRecord.push({
+        eventType: "status_change",
+        body: `Status changed from "${existing.status}" to "${updated.status}"`,
+      });
+    }
+
+    if (data.notes !== undefined && data.notes !== existing.notes && data.notes) {
+      eventsToRecord.push({
+        eventType: "note",
+        body: `Note updated: ${data.notes}`,
+      });
+    }
+
+    if (data.expectedDate !== undefined) {
+      const oldDate = existing.expectedDate ? existing.expectedDate.toISOString().split("T")[0] : "None";
+      const newDate = data.expectedDate ? new Date(data.expectedDate).toISOString().split("T")[0] : "None";
+      if (oldDate !== newDate) {
+        eventsToRecord.push({
+          eventType: "promise_updated",
+          body: `Promised resolution date updated from ${oldDate} to ${newDate}`,
+        });
+      }
+    }
+
+    if (data.nextAction !== undefined && data.nextAction !== existing.nextAction && data.nextAction) {
+      eventsToRecord.push({
+        eventType: "note",
+        body: `Next step updated: ${data.nextAction}`,
+      });
+    }
+
+    for (const evt of eventsToRecord) {
       await db.issueEvent.create({
         data: {
           issueId: updated.id,
           userId: user.id,
-          eventType: "status_change",
-          body: `Status changed from "${existing.status}" to "${updated.status}"`,
+          eventType: evt.eventType,
+          body: evt.body,
         },
       });
     }
 
-    return apiSuccess({ issue: updated });
+    // Fetch complete updated issue with events and attachments to prevent client crash
+    const completeIssue = await db.issue.findFirst({
+      where: {
+        id: existing.id,
+        userId: user.id,
+      },
+      include: {
+        events: {
+          orderBy: { eventAt: "desc" },
+        },
+        attachments: {
+          orderBy: { createdAt: "desc" },
+        },
+        reminders: true,
+      },
+    });
+
+    if (!completeIssue) {
+      return apiNotFound("Issue not found after update");
+    }
+
+    const attention = computeAttentionState(completeIssue.status as any, completeIssue.expectedDate);
+
+    return apiSuccess({
+      issue: {
+        ...completeIssue,
+        expectedDate: completeIssue.expectedDate ? completeIssue.expectedDate.toISOString().split("T")[0] : null,
+        createdAt: completeIssue.createdAt.toISOString(),
+        updatedAt: completeIssue.updatedAt.toISOString(),
+        isOverdue: attention.isOverdue,
+        isDueSoon: attention.isDueSoon,
+        daysRemaining: attention.daysRemaining,
+        attentionPriority: attention.attentionPriority,
+        attentionLabel: attention.attentionLabel,
+      },
+    });
   } catch (error) {
     console.error("Update issue error:", error);
     return apiError("Failed to update issue", "INTERNAL_ERROR", 500);
@@ -165,13 +234,25 @@ export async function DELETE(
       return apiNotFound("Issue not found or access denied");
     }
 
+    // Protect canonical sample complaints from deletion in demo mode
+    if (user.email === "demo@fixflow.app") {
+      const canonicalRefs = ["SR-948201", "TT-88310", "OD409218201", "AWB-672910", "SWIG-92817"];
+      if (existing.referenceNo && canonicalRefs.includes(existing.referenceNo)) {
+        return apiError(
+          "Canonical sample complaints cannot be deleted in demo mode. You can delete test complaints you created, or use 'Reset Demo Data'.",
+          "FORBIDDEN",
+          403
+        );
+      }
+    }
+
     await db.issue.delete({
       where: { id: existing.id },
     });
 
     return apiSuccess({ message: "Issue deleted successfully" });
   } catch (error) {
-    console.error("Delete issue error:", error);
+    console.error("Delete issue error:", error instanceof Error ? error.message : "Internal error");
     return apiError("Failed to delete issue", "INTERNAL_ERROR", 500);
   }
 }

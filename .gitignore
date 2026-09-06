@@ -33,6 +33,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma
+# prisma & database
 prisma/*.db
 prisma/*.db-journal
+*.db
+*.db-journal
+
+# file uploads (root directory only)
+/uploads/

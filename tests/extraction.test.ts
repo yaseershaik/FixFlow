@@ -153,7 +153,7 @@ describe("AI Extraction TRD — Real-world Messy Messages Corpus (16 Cases)", ()
       }
 
       // Company check
-      if (tc.expectedCompany) {
+      if (tc.expectedCompany !== undefined) {
         expect(res.company).toBe(tc.expectedCompany);
       }
 
@@ -176,5 +176,52 @@ describe("AI Extraction TRD — Real-world Messy Messages Corpus (16 Cases)", ()
 
     expect(res.company).toBeNull();
     expect(res.missing_fields).toContain("company");
+  });
+
+  it("Guardrail regression: Never extract days of the week (like Monday) as company name", async () => {
+    // 1. Message with 'from Monday' and no company
+    const msg1 = "Technician visit from Monday. Ticket ID 548921. Washing machine still broken.";
+    const res1 = await extractIssueFromText(msg1);
+    expect(res1.company).toBeNull();
+    expect(res1.company).not.toBe("Monday");
+    expect(res1.title).not.toContain("Monday:");
+
+    // 2. Message with known company and returned on Monday
+    const msg2 = "Flipkart Order OD30192801 returned on Monday. Support promised refund within 3 days.";
+    const res2 = await extractIssueFromText(msg2);
+    expect(res2.company).toBe("Flipkart");
+    expect(res2.company).not.toBe("Monday");
+
+    // 3. Message with 'from Monday morning' and complaint
+    const msg3 = "Service complaint from Monday morning. Reference #883921. Still waiting for resolution.";
+    const res3 = await extractIssueFromText(msg3);
+    expect(res3.company).toBeNull();
+    expect(res3.company).not.toBe("Monday");
+
+    // 4. Message with 'Monday support' phrasing
+    const msg4 = "Contacted Monday support for ticket #99102. Issue unresolved.";
+    const res4 = await extractIssueFromText(msg4);
+    expect(res4.company).toBeNull();
+    expect(res4.company).not.toBe("Monday");
+
+    // 5. Test all days of the week in conversational context
+    const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    for (const day of weekdays) {
+      const msg = `Issue reported on ${day}. Docket #DOK12345. Waiting for engineer visit on ${day}.`;
+      const res = await extractIssueFromText(msg);
+      expect(res.company).toBeNull();
+      expect(res.company).not.toBe(day);
+      expect(res.title).not.toMatch(new RegExp(`^${day}:`));
+    }
+
+    // 6. Legitimate brand from email domain should still extract
+    const validEmailMsg = "Issue with sound bar. Support ticket #SB9021. Contact care@boat-lifestyle.com for update.";
+    const validEmailRes = await extractIssueFromText(validEmailMsg);
+    expect(validEmailRes.company).toBe("Boat-lifestyle");
+
+    // 7. Legitimate brand from team greeting should still extract
+    const teamGreetingMsg = "Your booking #TRIP88102 is confirmed. Regards, Team Ixigo.";
+    const teamGreetingRes = await extractIssueFromText(teamGreetingMsg);
+    expect(teamGreetingRes.company).toBe("Ixigo");
   });
 });

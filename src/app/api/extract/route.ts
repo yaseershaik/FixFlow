@@ -2,8 +2,12 @@ import { NextRequest } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { extractIssueFromText, hashInput } from "@/lib/extraction";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { checkDailyExtractionQuota } from "@/lib/quotas";
 import { apiError, apiSuccess, apiUnauthorized } from "@/lib/api-response";
 import { z } from "zod";
+
+export const dynamic = "force-dynamic";
 
 const ExtractRequestSchema = z.object({
   text: z
@@ -12,26 +16,6 @@ const ExtractRequestSchema = z.object({
     .max(10000, "Text cannot exceed 10,000 characters"),
 });
 
-// In-memory per-user sliding window rate limiter
-const rateLimitMap = new Map<string, number[]>();
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 20;
-
-function isRateLimited(userId: string): boolean {
-  const now = Date.now();
-  const timestamps = rateLimitMap.get(userId) || [];
-  const validTimestamps = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-
-  if (validTimestamps.length >= MAX_REQUESTS_PER_WINDOW) {
-    rateLimitMap.set(userId, validTimestamps);
-    return true;
-  }
-
-  validTimestamps.push(now);
-  rateLimitMap.set(userId, validTimestamps);
-  return false;
-}
-
 export async function POST(req: NextRequest) {
   try {
     const user = await getSessionUser();
@@ -39,8 +23,9 @@ export async function POST(req: NextRequest) {
       return apiUnauthorized();
     }
 
-    // Aggressive rate-limiting as required by Section 8.2
-    if (isRateLimited(user.id)) {
+    // Rate limit per user (20 requests per minute)
+    const rl = checkRateLimit(`extract:${user.id}`, 20, 60 * 1000);
+    if (!rl.success) {
       return apiError(
         "Too many extraction requests. Please wait a minute before trying again.",
         "RATE_LIMIT_EXCEEDED",
@@ -48,8 +33,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = await req.json();
-    const parsed = ExtractRequestSchema.safeParse(body);
+    // 24-hour quota limit (30/day for regular users, 10/day for demo)
+    const isDemo = user.email === "demo@fixflow.app";
+    const quotaCheck = await checkDailyExtractionQuota(user.id, isDemo);
+    if (!quotaCheck.allowed) {
+      return apiError(
+        quotaCheck.message || "Daily extraction quota reached",
+        quotaCheck.code || "EXTRACTION_QUOTA_EXCEEDED",
+        429
+      );
+    }
+
+    const rawBody = await req.json().catch(() => null);
+    if (!rawBody) {
+      return apiError("Invalid request body", "BAD_REQUEST", 400);
+    }
+
+    const parsed = ExtractRequestSchema.safeParse(rawBody);
 
     if (!parsed.success) {
       return apiError(parsed.error.errors[0].message, "VALIDATION_ERROR", 400);

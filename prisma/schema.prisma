@@ -3,21 +3,24 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
-  passwordHash   String
-  name           String?
-  createdAt      DateTime        @default(now()) @map("created_at")
-  issues         Issue[]
-  issueEvents    IssueEvent[]
-  attachments    Attachment[]
-  reminders      Reminder[]
-  extractionRuns ExtractionRun[]
+  id               String          @id @default(cuid())
+  email            String          @unique
+  passwordHash     String
+  name             String?
+  resetToken       String?         @map("reset_token")
+  resetTokenExpiry DateTime?       @map("reset_token_expiry")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  issues           Issue[]
+  issueEvents      IssueEvent[]
+  attachments      Attachment[]
+  reminders        Reminder[]
+  extractionRuns   ExtractionRun[]
 
   @@map("users")
 }
@@ -46,6 +49,9 @@ model Issue {
   @@index([userId])
   @@index([status])
   @@index([category])
+  @@index([userId, createdAt])
+  @@index([userId, status])
+  @@index([userId, referenceNo])
   @@map("issues")
 }
 
@@ -63,6 +69,7 @@ model IssueEvent {
 
   @@index([issueId])
   @@index([userId])
+  @@index([issueId, eventAt])
   @@map("issue_events")
 }
 
@@ -91,12 +98,15 @@ model Reminder {
   remindAt    DateTime  @map("remind_at")
   type        String    @default("in_app") // in_app, browser, email
   completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   issue       Issue     @relation(fields: [issueId], references: [id], onDelete: Cascade)
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([issueId])
   @@index([userId])
+  @@index([userId, completedAt, remindAt])
   @@map("reminders")
 }
 
@@ -114,5 +124,6 @@ model ExtractionRun {
   issue      Issue?   @relation(fields: [issueId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([issueId])
   @@map("extraction_runs")
 }

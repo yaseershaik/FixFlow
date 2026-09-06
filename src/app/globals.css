@@ -72,3 +72,34 @@ input, select, textarea {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Print styles for consumer forum and NCH filing dossiers */
+@media print {
+  nav, footer, .no-print, button:not(.print-include) {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+  div[class*="rounded-"] {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+  a {
+    text-decoration: underline !important;
+    color: #000000 !important;
+  }
+}
+

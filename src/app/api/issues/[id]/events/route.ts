@@ -3,6 +3,9 @@ import { getSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { CreateEventSchema } from "@/lib/types";
 import { apiError, apiSuccess, apiUnauthorized, apiNotFound } from "@/lib/api-response";
+import { checkTimelineEventQuota } from "@/lib/quotas";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(
   req: NextRequest,
@@ -28,8 +31,23 @@ export async function POST(
       return apiNotFound("Issue not found or access denied");
     }
 
-    const body = await req.json();
-    const parsed = CreateEventSchema.safeParse(body);
+    // Quota check: limit total events per issue to avoid ballooning storage
+    const isDemo = user.email === "demo@fixflow.app";
+    const quotaCheck = await checkTimelineEventQuota(issue.id, user.id, isDemo);
+    if (!quotaCheck.allowed) {
+      return apiError(
+        quotaCheck.message || "Timeline event limit reached",
+        quotaCheck.code || "EVENT_COUNT_EXCEEDED",
+        400
+      );
+    }
+
+    const rawBody = await req.json().catch(() => null);
+    if (!rawBody) {
+      return apiError("Invalid request body", "BAD_REQUEST", 400);
+    }
+
+    const parsed = CreateEventSchema.safeParse(rawBody);
 
     if (!parsed.success) {
       return apiError(parsed.error.errors[0].message, "VALIDATION_ERROR", 400);
@@ -37,20 +55,41 @@ export async function POST(
 
     const data = parsed.data;
 
-    const event = await db.issueEvent.create({
-      data: {
-        issueId: issue.id,
-        userId: user.id,
-        eventType: data.eventType,
-        body: data.body,
-        eventAt: data.eventAt ? new Date(data.eventAt) : new Date(),
-      },
-    });
+    let eventDate = new Date();
+    if (data.eventAt) {
+      const parsedDate = new Date(data.eventAt);
+      if (isNaN(parsedDate.getTime())) {
+        return apiError("Invalid event date format", "VALIDATION_ERROR", 400);
+      }
+      eventDate = parsedDate;
+    }
 
-    // Touch issue updatedAt
-    await db.issue.update({
-      where: { id: issue.id },
-      data: { updatedAt: new Date() },
+    const event = await db.$transaction(async (tx) => {
+      const newEvent = await tx.issueEvent.create({
+        data: {
+          issueId: issue.id,
+          userId: user.id,
+          eventType: data.eventType,
+          body: data.body,
+          eventAt: eventDate,
+        },
+      });
+
+      const issueUpdateData: any = { updatedAt: new Date() };
+      if (data.newExpectedDate) {
+        const parsedExpected = new Date(data.newExpectedDate);
+        if (!isNaN(parsedExpected.getTime())) {
+          issueUpdateData.expectedDate = parsedExpected;
+        }
+      }
+
+      // Touch issue updatedAt and update expectedDate if provided
+      await tx.issue.update({
+        where: { id: issue.id },
+        data: issueUpdateData,
+      });
+
+      return newEvent;
     });
 
     return apiSuccess({ event }, 201);

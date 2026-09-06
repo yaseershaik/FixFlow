@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { createSessionToken, verifySessionToken } from "../src/lib/auth";
 import { db } from "../src/lib/db";
+import { checkRateLimit } from "../src/lib/rate-limit";
 
 describe("Security & Ownership Isolation (TRD Section 11)", () => {
   it("should securely sign and verify session tokens", () => {
@@ -18,6 +19,18 @@ describe("Security & Ownership Isolation (TRD Section 11)", () => {
     // Tampered signature
     const badSigToken = `${parts[0]}.invalidsignaturexyz`;
     expect(verifySessionToken(badSigToken)).toBeNull();
+  });
+
+  it("should encode and verify full user session data in-memory without database lookups", async () => {
+    const { verifySessionTokenPayload } = await import("../src/lib/auth");
+    const user = { id: "user-abc-123", email: "consumer@example.com", name: "Ananya Sharma" };
+    const fastToken = createSessionToken(user);
+
+    const payload = verifySessionTokenPayload(fastToken);
+    expect(payload).not.toBeNull();
+    expect(payload?.userId).toBe(user.id);
+    expect(payload?.email).toBe(user.email);
+    expect(payload?.name).toBe(user.name);
   });
 
   it("should strictly enforce ownership boundaries between distinct users", async () => {
@@ -78,4 +91,172 @@ describe("Security & Ownership Isolation (TRD Section 11)", () => {
     await db.user.delete({ where: { id: userA.id } });
     await db.user.delete({ where: { id: userB.id } });
   });
+
+  it("should enforce sliding window rate limits", () => {
+    const testKey = `test-ip-${Date.now()}`;
+
+    // First 3 requests under limit 3 should succeed
+    expect(checkRateLimit(testKey, 3, 1000).success).toBe(true);
+    expect(checkRateLimit(testKey, 3, 1000).success).toBe(true);
+    expect(checkRateLimit(testKey, 3, 1000).success).toBe(true);
+
+    // 4th request must be rate limited
+    const overLimit = checkRateLimit(testKey, 3, 1000);
+    expect(overLimit.success).toBe(false);
+    expect(overLimit.remaining).toBe(0);
+  });
+
+  it("should securely hash passwords with scrypt and verify correctly", async () => {
+    const { hashPassword, verifyPassword } = await import("../src/lib/auth");
+    const plaintext = "SuperSecretPassword123!";
+    const hash = hashPassword(plaintext);
+
+    expect(hash.startsWith("scrypt:")).toBe(true);
+    expect(hash.split(":").length).toBe(3);
+
+    // Correct password verifies successfully
+    const result1 = verifyPassword(plaintext, hash);
+    expect(result1.valid).toBe(true);
+    expect(result1.needsRehash).toBe(false);
+
+    // Incorrect password fails
+    const result2 = verifyPassword("WrongPassword123!", hash);
+    expect(result2.valid).toBe(false);
+
+    // Two identical passwords produce different salts and hashes
+    const hash2 = hashPassword(plaintext);
+    expect(hash).not.toBe(hash2);
+  });
+
+  it("should verify legacy HMAC hashes and signal rehash needed", async () => {
+    const { verifyPassword } = await import("../src/lib/auth");
+    const crypto = await import("crypto");
+    const password = "demo123Password";
+    const secret = process.env.SESSION_SECRET || "fixflow-secret-salt-default-key-2026";
+    const legacyHash = crypto
+      .createHmac("sha256", secret)
+      .update(password)
+      .digest("hex");
+
+    const check = verifyPassword(password, legacyHash);
+    expect(check.valid).toBe(true);
+    expect(check.needsRehash).toBe(true);
+
+    const wrongCheck = verifyPassword("incorrectPassword", legacyHash);
+    expect(wrongCheck.valid).toBe(false);
+  });
+
+  it("should handle password reset tokens with expiration correctly", async () => {
+    const testEmail = `reset-test-${Date.now()}@example.com`;
+    const resetCode = "849201";
+    const futureExpiry = new Date(Date.now() + 15 * 60 * 1000);
+
+    const user = await db.user.create({
+      data: {
+        email: testEmail,
+        passwordHash: "scrypt:placeholder:hash",
+        name: "Reset Tester",
+        resetToken: resetCode,
+        resetTokenExpiry: futureExpiry,
+      },
+    });
+
+    // Valid unexpired code
+    const validUser = await db.user.findFirst({
+      where: {
+        email: testEmail,
+        resetToken: resetCode,
+        resetTokenExpiry: { gt: new Date() },
+      },
+    });
+    expect(validUser).not.toBeNull();
+    expect(validUser?.id).toBe(user.id);
+
+    // Expired code should not match
+    const pastExpiry = new Date(Date.now() - 1000);
+    await db.user.update({
+      where: { id: user.id },
+      data: { resetTokenExpiry: pastExpiry },
+    });
+
+    const expiredUser = await db.user.findFirst({
+      where: {
+        email: testEmail,
+        resetToken: resetCode,
+        resetTokenExpiry: { gt: new Date() },
+      },
+    });
+    expect(expiredUser).toBeNull();
+
+    // Clean up
+    await db.user.delete({ where: { id: user.id } });
+  });
+
+  it("should reject disposable, temporary, burner, and fake email addresses", async () => {
+    const { validateRealEmail } = await import("../src/lib/email-validator");
+
+    // Known burner/disposable domains
+    const burnerEmails = [
+      "user@tempmail.com",
+      "test@temp-mail.org",
+      "hacker@guerrillamail.com",
+      "spammer@mailinator.com",
+      "throwaway@10minutemail.com",
+      "anon@yopmail.com",
+      "trash@sharklasers.com",
+      "temp@burnermail.io",
+      "fake@getnada.com",
+      "burner@fakeinbox.com",
+      "junk@mohmal.com",
+      "throw@dispostable.com",
+      // Subdomains of disposable providers
+      "victim@custom.mailinator.com",
+      "alert@inbox.guerrillamail.com",
+      // Pattern matches for disposable services
+      "auto@temp-mailbox-generator.org",
+      "trash@throwaway-service.net",
+      "user@burner-box.io",
+      // Dummy / test domains
+      "test@fake.com",
+      "developer@dummy.com",
+      "nobody@nowhere.com",
+      "user@test.com",
+      // Malformed / invalid emails
+      "invalid-email",
+      "@nodomain.com",
+      "user@",
+      "user@domain",
+      "user@domain..com",
+    ];
+
+    for (const email of burnerEmails) {
+      const result = validateRealEmail(email);
+      expect(result.isValid, `Expected ${email} to be rejected`).toBe(false);
+      expect(result.error).toBeDefined();
+    }
+  });
+
+  it("should permit legitimate consumer, corporate, and demo email addresses", async () => {
+    const { validateRealEmail } = await import("../src/lib/email-validator");
+
+    const legitimateEmails = [
+      "consumer@gmail.com",
+      "citizen@yahoo.co.in",
+      "support@outlook.com",
+      "dev@proton.me",
+      "worker@icloud.com",
+      "officer@tcs.com",
+      "grievance@tatacliq.com",
+      "complaints@gov.in",
+      "user.name+tag@company.co.uk",
+      "demo@fixflow.app", // FixFlow demo account must be allowed
+    ];
+
+    for (const email of legitimateEmails) {
+      const result = validateRealEmail(email);
+      expect(result.isValid, `Expected ${email} to be accepted`).toBe(true);
+      expect(result.error).toBeUndefined();
+    }
+  });
 });
+

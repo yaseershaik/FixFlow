@@ -40,6 +40,94 @@ const KNOWN_COMPANIES = [
   "India Post",
 ];
 
+const NON_COMPANY_WORDS = new Set([
+  // Days of the week (full, plural, abbreviations)
+  "monday", "mondays", "mon",
+  "tuesday", "tuesdays", "tue", "tues",
+  "wednesday", "wednesdays", "wed",
+  "thursday", "thursdays", "thu", "thur", "thurs",
+  "friday", "fridays", "fri",
+  "saturday", "saturdays", "sat",
+  "sunday", "sundays", "sun",
+
+  // Relative times & time units
+  "today", "yesterday", "tomorrow", "tonight", "morning", "afternoon", "evening", "night",
+  "noon", "midnight", "daily", "weekly", "monthly", "yearly", "now", "then", "soon", "later",
+  "day", "days", "hour", "hours", "hr", "hrs", "minute", "minutes", "min", "mins",
+  "week", "weeks", "wk", "wks", "month", "months", "year", "years", "yr", "yrs",
+  "weekend", "weekdays", "weekday", "time", "date",
+
+  // Months (full and abbreviations)
+  "january", "february", "march", "april", "may", "june", "july", "august",
+  "september", "october", "november", "december",
+  "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec",
+
+  // Common English articles, pronouns, prepositions, conjunctions, salutations
+  "the", "this", "that", "these", "those", "our", "my", "your", "their", "his", "her", "its",
+  "a", "an", "and", "or", "but", "if", "for", "with", "without", "from", "to", "at", "on", "in",
+  "by", "about", "into", "over", "after", "before", "between", "under", "above", "as",
+  "we", "us", "you", "i", "me", "they", "them", "he", "she", "it",
+  "dear", "hello", "hi", "hey", "please", "thanks", "thank", "regards", "sincerely", "cheers",
+  "sir", "madam", "mr", "mrs", "ms",
+
+  // Common non-brand vocabulary & ticket/service filler
+  "support", "care", "service", "services", "customer", "customers", "team", "executive",
+  "technician", "technicians", "engineer", "engineers", "manager", "agent", "agents",
+  "user", "users", "official", "helpdesk", "help", "assistant", "representative", "rep",
+  "store", "shop", "website", "app", "portal", "office", "call", "calls", "email", "sms", "chat",
+  "center", "centre", "helpcentre", "branch", "desk",
+  "order", "orders", "ticket", "tickets", "docket", "dockets", "complaint", "complaints",
+  "refund", "refunds", "delivery", "deliveries", "request", "requests", "issue", "issues",
+  "problem", "problems", "delay", "delayed", "delays", "update", "updates", "status",
+  "returned", "return", "returns", "courier", "package", "packages", "parcel", "consignment",
+  "item", "items", "product", "products", "money", "account", "accounts",
+  "bank", "card", "cards", "payment", "payments", "bill", "bills", "invoice", "receipt",
+  "visit", "visits", "scheduled", "cancelled", "confirmed", "pending", "completed",
+  "dispatched", "shipped", "arrived", "contact", "person", "someone", "anyone",
+
+  // Common symptoms, states, verbs, and conversational words
+  "cooling", "repair", "repairs", "heating", "broken", "leak", "leaking", "leakage",
+  "damage", "damaged", "faulty", "defective", "working", "start", "starting", "stop", "stopped",
+  "run", "running", "power", "screen", "display", "not", "still", "yet", "already", "again",
+  "also", "just", "very", "much", "too", "well", "new", "old", "good", "bad", "slow", "fast",
+  "said", "asked", "told", "replied", "promised", "stated", "called", "emailed", "visited", "sent",
+  "come", "coming", "came", "wait", "waiting", "waited", "expect", "expecting", "expected"
+]);
+
+export function isValidCompanyName(candidate: string | null | undefined): boolean {
+  if (!candidate) return false;
+  // Strip non-alphanumeric punctuation from edges
+  const trimmed = candidate.trim().replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "");
+  if (trimmed.length < 2) return false;
+
+  // Real brand/company names must start with a capital letter (e.g. Flipkart, Apple, not lowercase sentence fragments like "cooling")
+  if (!/^[A-Z]/.test(trimmed)) return false;
+
+  const clean = trimmed.toLowerCase();
+  if (NON_COMPANY_WORDS.has(clean)) return false;
+  if (/^\d+$/.test(clean)) return false;
+
+  // Split into tokens
+  const tokens = clean.split(/[\s\-_\/]+/);
+  // If all tokens are non-company / filler words, reject
+  if (tokens.every((t) => NON_COMPANY_WORDS.has(t))) return false;
+
+  // If the candidate starts with or is solely a day of the week, reject
+  const days = [
+    "monday", "mondays", "mon",
+    "tuesday", "tuesdays", "tue", "tues",
+    "wednesday", "wednesdays", "wed",
+    "thursday", "thursdays", "thu", "thur", "thurs",
+    "friday", "fridays", "fri",
+    "saturday", "saturdays", "sat",
+    "sunday", "sundays", "sun",
+  ];
+  if (days.includes(tokens[0])) return false;
+
+  return true;
+}
+
+
 export async function extractIssueFromText(text: string): Promise<ExtractionResult> {
   const trimmed = text.trim();
 
@@ -47,7 +135,15 @@ export async function extractIssueFromText(text: string): Promise<ExtractionResu
   if (process.env.GEMINI_API_KEY) {
     try {
       const geminiResult = await extractWithGemini(trimmed, process.env.GEMINI_API_KEY);
-      if (geminiResult) return geminiResult;
+      if (geminiResult) {
+        if (geminiResult.company && !isValidCompanyName(geminiResult.company)) {
+          geminiResult.company = null;
+          if (!geminiResult.missing_fields.includes("company")) {
+            geminiResult.missing_fields.push("company");
+          }
+        }
+        return geminiResult;
+      }
     } catch (err) {
       console.warn("Gemini extraction failed, falling back to heuristic extractor:", err);
     }
@@ -57,7 +153,15 @@ export async function extractIssueFromText(text: string): Promise<ExtractionResu
   if (process.env.OPENAI_API_KEY) {
     try {
       const openaiResult = await extractWithOpenAI(trimmed, process.env.OPENAI_API_KEY);
-      if (openaiResult) return openaiResult;
+      if (openaiResult) {
+        if (openaiResult.company && !isValidCompanyName(openaiResult.company)) {
+          openaiResult.company = null;
+          if (!openaiResult.missing_fields.includes("company")) {
+            openaiResult.missing_fields.push("company");
+          }
+        }
+        return openaiResult;
+      }
     } catch (err) {
       console.warn("OpenAI extraction failed, falling back to heuristic extractor:", err);
     }
@@ -112,12 +216,60 @@ function extractHeuristic(text: string): ExtractionResult {
   }
 
   if (!company) {
-    // Check for company/brand indicator like "@company.com" or "team <Brand>"
-    const teamMatch = text.match(/(?:team|from|support at|care at)\s+([A-Z][a-zA-Z0-9&]+)/i);
-    if (teamMatch && teamMatch[1]) {
-      company = teamMatch[1];
-      confidence.company = 0.7;
+    // 1. Check for email domain: e.g. "support@croma.com", "care@voltas.in"
+    const emailDomainMatch = text.match(/@([a-zA-Z0-9-]{3,25})\.(?:com|in|org|net|co|io)\b/i);
+    if (emailDomainMatch && emailDomainMatch[1]) {
+      const candidate = emailDomainMatch[1].replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "").trim();
+      const formatted = candidate.charAt(0).toUpperCase() + candidate.slice(1);
+      if (!["gmail", "yahoo", "outlook", "hotmail", "icloud", "proton", "zoho", "mail"].includes(candidate.toLowerCase()) && isValidCompanyName(formatted)) {
+        company = formatted;
+        confidence.company = 0.85;
+      }
     }
+  }
+
+  if (!company) {
+    // 2. Check for brand indicators: e.g. "Bosch Customer Care", "Voltas Support", "Hitachi Service"
+    // Note: Do not allow periods in brand names so sentence ends like "cooling." are never matched
+    const brandIndicatorMatch = text.match(/(?:^|[.!?\n]\s*|\s+)([A-Z][a-zA-Z0-9&'-]{1,24})\s+(?:customer\s*care|care\s*team|support\s*team|support|service\s*center|helpdesk)\b/i);
+    if (brandIndicatorMatch && brandIndicatorMatch[1]) {
+      const candidate = brandIndicatorMatch[1].replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "").trim();
+      if (isValidCompanyName(candidate)) {
+        company = candidate;
+        confidence.company = 0.8;
+      }
+    }
+  }
+
+  if (!company) {
+    // 3. Check for greeting/team indicators: e.g. "Team Myntra", "Regards, Team Ixigo", "Welcome to Zerodha"
+    // Note: Never use bare "from" as that matches temporal phrases like "from Monday" or "from tomorrow"
+    const teamMatch = text.match(/(?:(?:regards|thanks|cheers|greetings),?\s*(?:from\s+)?(?:the\s+)?(?:team\s+)?|(?:from\s+)?(?:the\s+)?team\s+|(?:email|message|sms|response|reply|notification)\s+from\s+|welcome\s+to\s+|contacting\s+)([A-Z][a-zA-Z0-9&'-]{1,24})/i);
+    if (teamMatch && teamMatch[1]) {
+      const candidate = teamMatch[1].replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "").trim();
+      if (isValidCompanyName(candidate)) {
+        company = candidate;
+        confidence.company = 0.75;
+      }
+    }
+  }
+
+  if (!company) {
+    // 4. Check for Order / Booking / Ticket prefix: e.g. "MakeMyTrip booking", "Nykaa order"
+    const prefixMatch = text.match(/\b([A-Z][a-zA-Z0-9&'-]{1,20})\s+(?:order|booking|flight|ticket|consignment|docket)\b/i);
+    if (prefixMatch && prefixMatch[1]) {
+      const candidate = prefixMatch[1].replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, "").trim();
+      if (isValidCompanyName(candidate)) {
+        company = candidate;
+        confidence.company = 0.7;
+      }
+    }
+  }
+
+  // Guardrail: Double check candidate validity before finalizing
+  if (company && !isValidCompanyName(company)) {
+    company = null;
+    confidence.company = 0;
   }
 
   if (!company) {

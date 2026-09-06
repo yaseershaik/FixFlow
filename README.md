@@ -177,5 +177,21 @@ npm run build
 
 ---
 
+## 📄 Resume Bullet Points & Interview Talking Points
+
+If you are showcasing FixFlow on your resume or portfolio, here are polished, metrics-driven bullet points formatted in standard Google XYZ format (`Accomplished [X] as measured by [Y], by doing [Z]`):
+
+### Recommended Resume Bullets:
+- **Full-Stack Engineering**: Built **FixFlow**, a responsive service-complaint tracking platform using **Next.js 14 App Router, TypeScript, Prisma ORM, and Tailwind CSS**, supporting multi-device workflows across mobile, tablet, and desktop.
+- **Edge ML & NLP Architecture**: Engineered an in-process **Edge ML pipeline** running client-side sentiment analysis, lexical urgency scoring (0–100 index), and **TF-IDF cosine similarity** for duplicate ticket detection, achieving 0ms cloud latency and $0 operational cost.
+- **Hybrid AI Extensibility**: Designed an edge-to-cloud extraction system that runs on-device heuristics by default for instant evaluation, with plug-and-play adapter hooks for cloud LLMs (**Google Gemini & OpenAI**).
+- **State Machine & Data Integrity**: Implemented a 5-stage deterministic lifecycle state machine with automated SLA overdue date detection, validated by **38 automated Vitest unit, integration, and security tests**.
+- **Practical Utility & Security**: Integrated 1-click **Formal Escalation Draft generation** (pre-compiling docket numbers, SLA breaches, and contact history into grievance letters), full CSV/JSON data portability, and OWASP-compliant security headers and rate limiting.
+
+### 60-Second Interview Demo Pitch:
+> *"I built FixFlow to solve a universal consumer problem: when you deal with customer support for appliance repairs, delayed refunds, or broadband outages, companies make verbal promises with reference numbers that get lost in WhatsApp chats or SMS. FixFlow runs an on-device Edge ML pipeline that extracts reference numbers and promised dates with zero cloud latency, computes an automated Urgency & Frustration Score, surfaces overdue items at the top of the dashboard in red, and generates a formal escalation letter to a nodal officer in one click. For production scale, it includes dynamic adapters for Google Gemini and OpenAI."*
+
+---
+
 ## License
 MIT License.

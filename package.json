@@ -5,7 +5,8 @@
   "scripts": {
     "clean": "node -e \"const fs=require('fs'); if(fs.existsSync('.next')) fs.rmSync('.next', {recursive:true, force:true});\"",
     "dev": "next dev -H 0.0.0.0 -p 3000",
-    "build": "npm run clean && next build",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && npm run clean && next build",
     "start": "next start -H 0.0.0.0 -p 3000",
     "lint": "next lint",
     "test": "vitest run",

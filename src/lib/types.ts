@@ -62,14 +62,18 @@ export const CreateEventSchema = z.object({
   eventType: z.enum([
     "note",
     "call",
+    "message",
+    "whatsapp",
     "email",
     "status_change",
     "promise_updated",
     "technician_visit",
     "escalation",
+    "created",
   ]),
   body: z.string().min(1, "Event description is required").max(2000),
   eventAt: z.string().optional(),
+  newExpectedDate: z.string().optional().nullable(),
 });
 
 export type CreateEventInput = z.infer<typeof CreateEventSchema>;
