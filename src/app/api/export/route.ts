@@ -3,6 +3,8 @@ import { getSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { apiError, apiSuccess, apiUnauthorized } from "@/lib/api-response";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const user = await getSessionUser();
