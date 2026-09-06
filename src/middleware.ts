@@ -84,6 +84,7 @@ const PUBLIC_PAGES = new Set([
   "/consumer-rights",
   "/privacy",
   "/terms",
+  "/blog",
 ]);
 
 const AUTH_PAGES = new Set([
@@ -104,12 +105,19 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const sessionCookie = req.cookies.get(COOKIE_NAME)?.value;
 
+  // Static root files (e.g. google verification html, IndexNow txt)
+  if (pathname.includes(".") && !pathname.startsWith("/api/")) {
+    const response = NextResponse.next();
+    applySecurityHeaders(response);
+    return response;
+  }
+
   // Cryptographically verify session at the edge
   const verifiedUserId = await verifySessionTokenEdge(sessionCookie, SECRET);
   const isAuthenticated = Boolean(verifiedUserId);
 
   // 1. Public educational and landing pages: allow all
-  if (PUBLIC_PAGES.has(pathname)) {
+  if (PUBLIC_PAGES.has(pathname) || pathname.startsWith("/blog/")) {
     const response = NextResponse.next();
     applySecurityHeaders(response);
     return response;
@@ -184,7 +192,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico, icon.svg, icon-*.png (metadata files)
      * - manifest.webmanifest, robots.txt, sitemap.xml
+     * - static root files (*.html, *.txt)
      */
-    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|icon-.*\\.png|manifest\\.webmanifest|robots\\.txt|sitemap\\.xml).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|icon\\.svg|icon-.*\\.png|manifest\\.webmanifest|robots\\.txt|sitemap\\.xml|.*\\.(?:html|txt)$).*)",
   ],
 };
