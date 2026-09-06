@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  passwordHash   String
+  name           String?
+  createdAt      DateTime        @default(now()) @map("created_at")
+  issues         Issue[]
+  issueEvents    IssueEvent[]
+  attachments    Attachment[]
+  reminders      Reminder[]
+  extractionRuns ExtractionRun[]
+
+  @@map("users")
+}
+
+model Issue {
+  id             String          @id @default(cuid())
+  userId         String          @map("user_id")
+  title          String
+  company        String
+  category       String          // delivery, telecom, warranty, refund, banking, education, government, other
+  referenceNo    String?         @map("reference_no")
+  description    String
+  status         String          @default("open") // open, waiting, action_needed, resolved, closed
+  expectedDate   DateTime?       @map("expected_date")
+  nextAction     String?         @map("next_action")
+  notes          String?
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events         IssueEvent[]
+  attachments    Attachment[]
+  reminders      Reminder[]
+  extractionRuns ExtractionRun[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([category])
+  @@map("issues")
+}
+
+model IssueEvent {
+  id        String   @id @default(cuid())
+  issueId   String   @map("issue_id")
+  userId    String   @map("user_id")
+  eventType String   @map("event_type") // note, call, email, status_change, promise_updated, created
+  body      String
+  eventAt   DateTime @default(now()) @map("event_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([issueId])
+  @@index([userId])
+  @@map("issue_events")
+}
+
+model Attachment {
+  id          String   @id @default(cuid())
+  issueId     String   @map("issue_id")
+  userId      String   @map("user_id")
+  storagePath String   @map("storage_path")
+  filename    String
+  mimeType    String   @map("mime_type")
+  size        Int
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  issue       Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([issueId])
+  @@index([userId])
+  @@map("attachments")
+}
+
+model Reminder {
+  id          String    @id @default(cuid())
+  issueId     String    @map("issue_id")
+  userId      String    @map("user_id")
+  remindAt    DateTime  @map("remind_at")
+  type        String    @default("in_app") // in_app, browser, email
+  completedAt DateTime? @map("completed_at")
+
+  issue       Issue     @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([issueId])
+  @@index([userId])
+  @@map("reminders")
+}
+
+model ExtractionRun {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  issueId    String?  @map("issue_id")
+  provider   String   // gemini, openai, heuristic
+  model      String
+  inputHash  String   @map("input_hash")
+  outputJson String   @map("output_json")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issue      Issue?   @relation(fields: [issueId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("extraction_runs")
+}
