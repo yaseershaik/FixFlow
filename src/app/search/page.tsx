@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Building2,
   X,
+  Inbox,
 } from "lucide-react";
 import { IssueCategory, IssueStatus } from "@/lib/types";
 
@@ -57,29 +58,31 @@ export default function SearchPage() {
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 mb-6 transition"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 mb-6 transition"
       >
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Link>
 
-      <div className="border-b border-slate-200 pb-4 mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Search & Filter</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Find any past or active service complaint by reference #, company, or problem
+      <div className="border-b border-slate-200/80 pb-5 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Search & Filter
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          Instant query across complaint titles, company names, docket reference numbers, and notes
         </p>
       </div>
 
       {/* Search Input and Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
-        <form onSubmit={executeSearch} className="flex gap-2">
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-card space-y-4">
+        <form onSubmit={executeSearch} className="flex gap-2.5">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-4 top-3.5 h-4 w-4 text-slate-400" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by company (Samsung), reference # (548921), keyword (cooling)..."
-              className="w-full rounded-xl border border-slate-300 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full rounded-2xl border border-slate-200 pl-11 pr-10 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-subtle transition"
             />
             {query && (
               <button
@@ -88,7 +91,7 @@ export default function SearchPage() {
                   setQuery("");
                   setTimeout(executeSearch, 0);
                 }}
-                className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
+                className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -96,22 +99,22 @@ export default function SearchPage() {
           </div>
           <button
             type="submit"
-            className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition"
+            className="rounded-2xl bg-slate-900 px-6 py-3 text-xs font-bold text-white shadow-card hover:bg-slate-800 transition active:scale-[0.98]"
           >
             Search
           </button>
         </form>
 
         {/* Filter pills */}
-        <div className="flex flex-wrap items-center gap-4 pt-2 text-xs">
-          <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+        <div className="flex flex-wrap items-center gap-3 pt-2 text-xs">
+          <div className="flex items-center gap-1.5 font-bold text-slate-600">
             <Filter className="h-3.5 w-3.5 text-slate-400" />
             <span>Category:</span>
           </div>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-indigo-500"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
           >
             <option value="all">All Categories</option>
             <option value="warranty">Appliance & Warranty</option>
@@ -124,13 +127,13 @@ export default function SearchPage() {
             <option value="other">Other</option>
           </select>
 
-          <div className="flex items-center gap-1.5 font-semibold text-slate-700 ml-2">
+          <div className="flex items-center gap-1.5 font-bold text-slate-600 ml-2">
             <span>Status:</span>
           </div>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-indigo-500"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
           >
             <option value="all">All Statuses</option>
             <option value="open">Open</option>
@@ -142,50 +145,51 @@ export default function SearchPage() {
         </div>
       </div>
 
-      {/* Results list */}
-      <div className="mt-6">
-        <div className="flex items-center justify-between mb-3 text-xs text-slate-500 font-medium">
-          <span>{loading ? "Searching..." : `${results.length} results found`}</span>
+      {/* Results */}
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-3 text-xs text-slate-400 font-semibold uppercase tracking-wider">
+          <span>{loading ? "Searching..." : `${results.length} results matching filter`}</span>
         </div>
 
         {results.length === 0 && !loading ? (
-          <div className="rounded-xl border border-dashed border-slate-200 bg-white p-12 text-center text-xs text-slate-500">
-            No matching issues found. Try refining your search keywords or clear filters.
+          <div className="rounded-3xl border border-dashed border-slate-200 bg-white/80 p-12 text-center text-xs text-slate-400 shadow-subtle">
+            <Inbox className="h-8 w-8 mx-auto mb-2 text-slate-300" />
+            No matching issues found. Try adjusting keywords or clearing category filters.
           </div>
         ) : (
-          <div className="grid gap-3">
+          <div className="grid gap-3.5">
             {results.map((issue) => (
               <Link
                 key={issue.id}
                 href={`/issues/${issue.id}`}
-                className="group block rounded-xl border border-slate-200 bg-white p-4 hover:border-indigo-300 hover:shadow-sm transition"
+                className="group block rounded-2xl border border-slate-200/80 bg-white p-5 hover:border-indigo-300 hover:shadow-card transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                    <span className="font-bold text-xs text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-lg border border-indigo-100">
                       {issue.company}
                     </span>
                     {issue.referenceNo && (
-                      <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                      <span className="font-mono text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
                         #{issue.referenceNo}
                       </span>
                     )}
-                    <span className="capitalize text-xs text-slate-400">{issue.category}</span>
+                    <span className="capitalize text-xs text-slate-400 font-medium">{issue.category}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     {issue.isOverdue && (
-                      <span className="rounded bg-rose-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                      <span className="rounded-full bg-rose-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
                         Overdue
                       </span>
                     )}
-                    <span className="rounded bg-slate-100 text-slate-700 px-2 py-0.5 text-[10px] font-semibold uppercase">
+                    <span className="rounded-full bg-slate-100 text-slate-700 px-2.5 py-0.5 text-[10px] font-bold uppercase">
                       {issue.status}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-2 flex items-center justify-between">
+                <div className="mt-2.5 flex items-center justify-between">
                   <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition">
                     {issue.title}
                   </h3>

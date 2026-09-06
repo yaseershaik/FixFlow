@@ -24,6 +24,8 @@ import {
   Loader2,
   RefreshCw,
   ExternalLink,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { IssueCategory, IssueStatus } from "@/lib/types";
 import { ALLOWED_TRANSITIONS } from "@/lib/lifecycle";
@@ -269,8 +271,8 @@ export default function IssueDetailPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-16 text-center text-sm text-slate-500">
-        Loading issue details...
+      <div className="mx-auto max-w-4xl px-4 py-20 text-center text-xs text-slate-400 font-medium">
+        Loading issue history...
       </div>
     );
   }
@@ -278,7 +280,7 @@ export default function IssueDetailPage() {
   if (error || !issue) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 text-center">
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-rose-700">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-rose-700 text-xs font-semibold shadow-card">
           {error || "Issue not found"}
         </div>
         <Link
@@ -292,7 +294,6 @@ export default function IssueDetailPage() {
   }
 
   const allowedStatuses = ALLOWED_TRANSITIONS[issue.status] || [];
-  const allPossibleStatuses: IssueStatus[] = ["open", "waiting", "action_needed", "resolved", "closed"];
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -317,7 +318,7 @@ export default function IssueDetailPage() {
       <div className="flex items-center justify-between mb-6">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition"
         >
           <ArrowLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
@@ -325,15 +326,15 @@ export default function IssueDetailPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-subtle transition"
           >
-            <Edit3 className="h-3.5 w-3.5" />
-            {isEditing ? "Done Editing" : "Edit Issue"}
+            <Edit3 className="h-3.5 w-3.5 text-slate-400" />
+            <span>{isEditing ? "Done Editing" : "Edit Details"}</span>
           </button>
           <button
             onClick={handleDelete}
             title="Delete Issue"
-            className="rounded-lg border border-rose-200 bg-white p-1.5 text-rose-600 hover:bg-rose-50 transition"
+            className="rounded-xl border border-rose-200/80 bg-white p-2 text-rose-600 hover:bg-rose-50 shadow-subtle transition"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -342,37 +343,37 @@ export default function IssueDetailPage() {
 
       {/* Overdue Attention Banner */}
       {issue.isOverdue && issue.status !== "resolved" && issue.status !== "closed" && (
-        <div className="mb-6 rounded-xl border border-rose-300 bg-rose-50 p-4 text-rose-900 shadow-sm flex items-start gap-3">
-          <div className="rounded-lg bg-rose-600 p-2 text-white shrink-0 mt-0.5">
+        <div className="mb-6 rounded-2xl border border-rose-200 bg-gradient-to-r from-rose-50 via-rose-50/70 to-white p-5 text-rose-900 shadow-card flex items-start gap-3.5">
+          <div className="rounded-xl bg-rose-600 p-2.5 text-white shrink-0 mt-0.5 shadow-sm">
             <AlertTriangle className="h-5 w-5" />
           </div>
           <div className="flex-1">
-            <h3 className="text-sm font-bold">
-              Follow-up SLA Breached ({issue.attentionLabel})
+            <h3 className="text-sm font-bold text-rose-950">
+              Resolution Target Overdue ({issue.attentionLabel})
             </h3>
-            <p className="text-xs text-rose-700 mt-0.5">
-              The promised action date was {issue.expectedDate}. Escalate or follow up with{" "}
-              {issue.company}.
+            <p className="text-xs text-rose-700 mt-1 leading-relaxed">
+              The promised action date was {issue.expectedDate}. Please escalate to a nodal officer or
+              grievance cell at {issue.company}.
             </p>
           </div>
         </div>
       )}
 
       {/* Main Issue Header Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-xs text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">
+              <span className="font-bold text-xs text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
                 {issue.company}
               </span>
-              <span className="capitalize text-xs text-slate-500 font-medium bg-slate-100 px-2 py-0.5 rounded">
+              <span className="capitalize text-xs text-slate-500 font-semibold bg-slate-100 px-2.5 py-1 rounded-lg">
                 {issue.category}
               </span>
               {issue.referenceNo && (
                 <button
                   onClick={() => handleCopy(issue.referenceNo!, "ref")}
-                  className="inline-flex items-center gap-1 font-mono text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-0.5 rounded transition"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-slate-700 bg-slate-100 hover:bg-slate-200/80 px-2.5 py-1 rounded-lg transition"
                   title="Click to copy reference number"
                 >
                   <span>#{issue.referenceNo}</span>
@@ -385,21 +386,21 @@ export default function IssueDetailPage() {
               )}
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
               {issue.title}
             </h1>
           </div>
 
           {/* Lifecycle Status Switcher */}
-          <div className="shrink-0 flex flex-col items-end">
+          <div className="shrink-0 flex flex-col sm:items-end">
             <span className="text-[10px] uppercase font-bold text-slate-400 mb-1">
-              Current Status
+              Current Lifecycle
             </span>
             <select
               value={issue.status}
               disabled={updatingStatus}
               onChange={(e) => handleStatusChange(e.target.value as IssueStatus)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer shadow-xs"
+              className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-subtle transition"
             >
               <option value={issue.status}>
                 ● {issue.status.toUpperCase()} (Current)
@@ -410,24 +411,21 @@ export default function IssueDetailPage() {
                 </option>
               ))}
             </select>
-            <span className="text-[10px] text-slate-400 mt-1">
-              Enforcing valid lifecycle states
-            </span>
           </div>
         </div>
 
-        {/* Next Action Box */}
+        {/* Immediate Next Action Banner */}
         {(issue.nextAction || isEditing) && (
-          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50/70 p-4">
+          <div className="mt-6 rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50/80 to-amber-50/40 p-4 shadow-subtle">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
                 <AlertCircle className="h-4 w-4 text-amber-600" />
-                Immediate Next Action
+                Immediate Next Step
               </span>
               {issue.nextAction && !isEditing && (
                 <button
                   onClick={() => handleCopy(issue.nextAction!, "action")}
-                  className="text-[11px] font-semibold text-amber-800 hover:text-amber-900 inline-flex items-center gap-1"
+                  className="text-[11px] font-semibold text-amber-800 hover:text-amber-950 inline-flex items-center gap-1"
                 >
                   {copiedAction ? (
                     <>
@@ -435,7 +433,7 @@ export default function IssueDetailPage() {
                     </>
                   ) : (
                     <>
-                      <Copy className="h-3 w-3" /> Copy Action
+                      <Copy className="h-3 w-3" /> Copy Next Step
                     </>
                   )}
                 </button>
@@ -449,47 +447,49 @@ export default function IssueDetailPage() {
                   value={editNextAction}
                   onChange={(e) => setEditNextAction(e.target.value)}
                   placeholder="e.g. Call nodal officer if technician doesn't arrive by 2 PM"
-                  className="w-full rounded-lg border border-amber-300 bg-white p-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="w-full rounded-xl border border-amber-300 bg-white p-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                 />
               </div>
             ) : (
-              <p className="mt-1 text-sm font-semibold text-amber-950">
+              <p className="mt-1.5 text-xs sm:text-sm font-bold text-amber-950">
                 {issue.nextAction}
               </p>
             )}
           </div>
         )}
 
-        {/* Metadata grid */}
+        {/* Metadata Grid */}
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-100 pt-6">
-          <div>
-            <div className="text-[11px] font-medium text-slate-400">Promised Date / SLA</div>
+          <div className="rounded-xl bg-slate-50/60 p-3.5 border border-slate-100">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Promised Date / SLA
+            </div>
             {isEditing ? (
               <input
                 type="date"
                 value={editExpectedDate}
                 onChange={(e) => setEditExpectedDate(e.target.value)}
-                className="mt-1 block w-full rounded border border-slate-300 p-1 text-xs text-slate-800"
+                className="mt-1 block w-full rounded-lg border border-slate-200 p-1.5 text-xs text-slate-800"
               />
             ) : (
-              <div className="mt-0.5 text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
+              <div className="mt-1 text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 text-indigo-500" />
                 <span>{issue.expectedDate || "No target date set"}</span>
               </div>
             )}
           </div>
 
-          <div>
-            <div className="text-[11px] font-medium text-slate-400">Created On</div>
-            <div className="mt-0.5 text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+          <div className="rounded-xl bg-slate-50/60 p-3.5 border border-slate-100">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Created On</div>
+            <div className="mt-1 text-xs font-bold text-slate-800 flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 text-slate-400" />
               <span>{new Date(issue.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
 
-          <div>
-            <div className="text-[11px] font-medium text-slate-400">Last Activity</div>
-            <div className="mt-0.5 text-xs font-semibold text-slate-800">
+          <div className="rounded-xl bg-slate-50/60 p-3.5 border border-slate-100">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Last Activity</div>
+            <div className="mt-1 text-xs font-bold text-slate-800">
               {new Date(issue.updatedAt).toLocaleDateString()}
             </div>
           </div>
@@ -497,17 +497,17 @@ export default function IssueDetailPage() {
 
         {/* Description */}
         <div className="mt-6 border-t border-slate-100 pt-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+          <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
             Description
           </h3>
-          <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <p className="text-xs text-slate-700 leading-relaxed whitespace-pre-line bg-slate-50/70 p-4 rounded-2xl border border-slate-100">
             {issue.description}
           </p>
         </div>
 
         {/* Notes */}
         <div className="mt-6 border-t border-slate-100 pt-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+          <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
             Private Notes & Reference Details
           </h3>
           {isEditing ? (
@@ -515,10 +515,10 @@ export default function IssueDetailPage() {
               rows={3}
               value={editNotes}
               onChange={(e) => setEditNotes(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 p-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full rounded-xl border border-slate-200 p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
             />
           ) : (
-            <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+            <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/40 p-3 rounded-xl border border-slate-100">
               {issue.notes || "No private notes added yet."}
             </p>
           )}
@@ -530,7 +530,7 @@ export default function IssueDetailPage() {
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-xl border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -538,7 +538,7 @@ export default function IssueDetailPage() {
               type="button"
               onClick={handleSaveEdit}
               disabled={savingEdit}
-              className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+              className="rounded-xl bg-slate-900 px-4 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
             >
               {savingEdit ? "Saving..." : "Save Changes"}
             </button>
@@ -546,21 +546,21 @@ export default function IssueDetailPage() {
         )}
       </div>
 
-      {/* Chronological Event Timeline Section */}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+      {/* Chronological Event Timeline */}
+      <div className="mt-8 rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
           <div>
             <h2 className="text-base font-bold text-slate-900 tracking-tight">
               Resolution Timeline ({issue.events.length})
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Chronological log of calls, status changes, and provider promises
+              Chronological log of customer calls, emails, and promises
             </p>
           </div>
 
           <button
             onClick={() => setShowEventForm(!showEventForm)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 shadow-subtle transition"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Log Event</span>
@@ -569,42 +569,40 @@ export default function IssueDetailPage() {
 
         {/* Add Event Form */}
         {showEventForm && (
-          <form onSubmit={handleAddEvent} className="mb-6 rounded-xl border border-indigo-100 bg-slate-50 p-4 space-y-3">
+          <form onSubmit={handleAddEvent} className="mb-6 rounded-2xl border border-indigo-200/80 bg-slate-50/70 p-5 space-y-3.5 shadow-subtle">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Log New Communication or Update
+                Log New Communication or Escalation
               </span>
               <button
                 type="button"
                 onClick={() => setShowEventForm(false)}
-                className="text-xs text-slate-400 hover:text-slate-600"
+                className="text-xs text-slate-400 hover:text-slate-600 font-medium"
               >
                 Cancel
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  Event Type
-                </label>
-                <select
-                  value={eventType}
-                  onChange={(e) => setEventType(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                >
-                  <option value="call">Phone Call with Support</option>
-                  <option value="email">Email Sent / Received</option>
-                  <option value="note">Internal Note / Observation</option>
-                  <option value="promise_updated">Promise / Date Update</option>
-                  <option value="technician_visit">Technician Visit</option>
-                  <option value="escalation">Escalation to Nodal / Grievance</option>
-                </select>
-              </div>
+            <div>
+              <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                Event Type
+              </label>
+              <select
+                value={eventType}
+                onChange={(e) => setEventType(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+              >
+                <option value="call">Phone Call with Support</option>
+                <option value="email">Email Sent / Received</option>
+                <option value="note">Internal Note / Observation</option>
+                <option value="promise_updated">Promise / Date Update</option>
+                <option value="technician_visit">Technician Visit</option>
+                <option value="escalation">Escalation to Nodal / Grievance</option>
+              </select>
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+              <label className="block text-[11px] font-bold text-slate-600 mb-1">
                 Event Summary / Notes
               </label>
               <textarea
@@ -612,8 +610,8 @@ export default function IssueDetailPage() {
                 required
                 value={eventBody}
                 onChange={(e) => setEventBody(e.target.value)}
-                placeholder="What happened? (e.g. Spoke to agent Vikram, ticket escalated to Level 2)"
-                className="w-full rounded-lg border border-slate-300 bg-white p-2 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder="What occurred? (e.g. Spoke to agent Vikram, ticket escalated to Level 2)"
+                className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
 
@@ -621,7 +619,7 @@ export default function IssueDetailPage() {
               <button
                 type="submit"
                 disabled={loggingEvent}
-                className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition"
+                className="rounded-xl bg-slate-900 px-5 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 transition"
               >
                 {loggingEvent ? "Logging..." : "Add to Timeline"}
               </button>
@@ -643,16 +641,16 @@ export default function IssueDetailPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                  <div className="flex items-center gap-1.5 font-semibold text-xs text-slate-900 capitalize">
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900 capitalize">
                     {getEventIcon(evt.eventType)}
                     <span>{evt.eventType.replace(/_/g, " ")}</span>
                   </div>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[10px] text-slate-400 font-medium">
                     {new Date(evt.eventAt).toLocaleString()}
                   </span>
                 </div>
 
-                <p className="mt-1 text-xs text-slate-600 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <p className="mt-1.5 text-xs text-slate-600 leading-relaxed bg-slate-50/70 p-3 rounded-xl border border-slate-100">
                   {evt.body}
                 </p>
               </div>
@@ -662,7 +660,7 @@ export default function IssueDetailPage() {
       </div>
 
       {/* Attachments Section */}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+      <div className="mt-8 rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
           <div>
             <h2 className="text-base font-bold text-slate-900 tracking-tight">
@@ -673,8 +671,8 @@ export default function IssueDetailPage() {
             </p>
           </div>
 
-          <label className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition shadow-xs">
-            <Paperclip className="h-3.5 w-3.5 text-slate-500" />
+          <label className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-subtle transition">
+            <Paperclip className="h-3.5 w-3.5 text-slate-400" />
             <span>{uploadingFile ? "Uploading..." : "Upload File"}</span>
             <input
               type="file"
@@ -687,7 +685,7 @@ export default function IssueDetailPage() {
         </div>
 
         {uploadError && (
-          <div className="mb-4 text-xs text-rose-600 font-medium">{uploadError}</div>
+          <div className="mb-4 text-xs text-rose-600 font-semibold">{uploadError}</div>
         )}
 
         {issue.attachments.length === 0 ? (
@@ -699,14 +697,14 @@ export default function IssueDetailPage() {
             {issue.attachments.map((att) => (
               <div
                 key={att.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 p-3 hover:bg-slate-50 transition"
+                className="flex items-center justify-between rounded-2xl border border-slate-200 p-3.5 hover:bg-slate-50/70 transition"
               >
-                <div className="flex items-center gap-2.5 overflow-hidden">
-                  <div className="rounded-lg bg-indigo-50 p-2 text-indigo-600 shrink-0">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="rounded-xl bg-indigo-50 p-2.5 text-indigo-600 shrink-0">
                     <Paperclip className="h-4 w-4" />
                   </div>
                   <div className="truncate">
-                    <div className="text-xs font-semibold text-slate-800 truncate">
+                    <div className="text-xs font-bold text-slate-800 truncate">
                       {att.filename}
                     </div>
                     <div className="text-[10px] text-slate-400">
@@ -719,7 +717,7 @@ export default function IssueDetailPage() {
                   href={att.storagePath}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-md p-1.5 text-slate-400 hover:text-indigo-600 transition shrink-0"
+                  className="rounded-lg p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition shrink-0"
                   title="View attachment"
                 >
                   <ExternalLink className="h-4 w-4" />

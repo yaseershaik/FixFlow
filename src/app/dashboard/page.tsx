@@ -9,15 +9,16 @@ import {
   PlusCircle,
   Search,
   Filter,
-  ArrowUpRight,
   ShieldCheck,
   CheckCircle2,
   AlertTriangle,
   FileText,
-  Building2,
   Calendar,
   Layers,
   ChevronRight,
+  ArrowUpRight,
+  Sparkles,
+  Inbox,
 } from "lucide-react";
 import { IssueCategory, IssueStatus } from "@/lib/types";
 
@@ -68,7 +69,6 @@ export default function DashboardPage() {
     }
   };
 
-  // Groupings based on Attention Hierarchy
   const overdueIssues = issues.filter((i) => i.isOverdue && i.status !== "resolved" && i.status !== "closed");
   const actionNeededIssues = issues.filter(
     (i) => i.status === "action_needed" && !i.isOverdue
@@ -88,159 +88,176 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      {/* Top Header & Quick Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200/80">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Issue Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-0.5">
-            Attention-first follow-up tracker for unresolved service issues
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Service Dashboard
+            </h1>
+            <span className="rounded-full bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 text-[11px] font-bold text-indigo-700">
+              {totalActive} active
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            Prioritized by SLA urgency: overdue promises and required actions surfaced first
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <Link
             href="/search"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-subtle transition"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-4 w-4 text-slate-400" />
             <span className="hidden sm:inline">Search</span>
           </Link>
           <Link
             href="/issues/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition"
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white shadow-card hover:bg-slate-800 transition active:scale-[0.98]"
           >
-            <PlusCircle className="h-4 w-4" />
+            <PlusCircle className="h-4 w-4 text-indigo-400" />
             <span>New Issue</span>
           </Link>
         </div>
       </div>
 
-      {/* Attention-First Metrics Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 my-6">
-        {/* Overdue (Highest visual priority) */}
+      {/* Attention-First Stat Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5 my-6">
+        {/* Overdue */}
         <button
           onClick={() => setActiveTab("overdue")}
-          className={`text-left rounded-xl p-4 transition border ${
+          className={`text-left rounded-2xl p-4 transition-all border ${
             overdueIssues.length > 0
-              ? "bg-rose-50 border-rose-300 ring-2 ring-rose-500/20"
-              : "bg-white border-slate-200"
+              ? "bg-gradient-to-br from-rose-50/90 to-rose-100/40 border-rose-200 shadow-sm ring-1 ring-rose-300/50"
+              : "bg-white border-slate-200/80 shadow-card"
           } ${activeTab === "overdue" ? "ring-2 ring-rose-500" : ""}`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-rose-700">Overdue</span>
-            <AlertTriangle className={`h-4 w-4 ${overdueIssues.length > 0 ? "text-rose-600 animate-pulse" : "text-slate-400"}`} />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">Overdue</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-200/80 text-rose-700">
+              <AlertTriangle className="h-3 w-3" />
+            </span>
           </div>
-          <div className="mt-2 text-2xl font-black text-rose-700">{overdueIssues.length}</div>
-          <div className="text-[11px] text-rose-600/80 font-medium mt-0.5">Promised SLA passed</div>
+          <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-rose-700">{overdueIssues.length}</div>
+          <div className="text-[10px] text-rose-600 font-semibold mt-1">Immediate action</div>
         </button>
 
         {/* Action Needed */}
         <button
           onClick={() => setActiveTab("action")}
-          className={`text-left rounded-xl p-4 transition border ${
+          className={`text-left rounded-2xl p-4 transition-all border ${
             actionNeededIssues.length > 0
-              ? "bg-amber-50 border-amber-300 ring-2 ring-amber-500/20"
-              : "bg-white border-slate-200"
+              ? "bg-gradient-to-br from-amber-50/90 to-amber-100/40 border-amber-200 shadow-sm ring-1 ring-amber-300/50"
+              : "bg-white border-slate-200/80 shadow-card"
           } ${activeTab === "action" ? "ring-2 ring-amber-500" : ""}`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-700">Action Needed</span>
-            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700">Action Needed</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-200/80 text-amber-700">
+              <AlertCircle className="h-3 w-3" />
+            </span>
           </div>
-          <div className="mt-2 text-2xl font-black text-amber-700">{actionNeededIssues.length}</div>
-          <div className="text-[11px] text-amber-600/80 font-medium mt-0.5">Your action required</div>
+          <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-amber-700">{actionNeededIssues.length}</div>
+          <div className="text-[10px] text-amber-600 font-semibold mt-1">Waiting on you</div>
         </button>
 
         {/* Due Soon */}
         <button
           onClick={() => setActiveTab("attention")}
-          className={`text-left rounded-xl p-4 transition border bg-white border-slate-200 hover:border-slate-300`}
+          className="text-left rounded-2xl p-4 bg-white border border-slate-200/80 shadow-card hover:border-slate-300 transition-all"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Due Soon</span>
-            <Clock className="h-4 w-4 text-blue-600" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-sky-700">Due Soon</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+              <Clock className="h-3 w-3" />
+            </span>
           </div>
-          <div className="mt-2 text-2xl font-black text-blue-700">{dueSoonIssues.length}</div>
-          <div className="text-[11px] text-slate-500 font-medium mt-0.5">Within 48 hours</div>
+          <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-sky-700">{dueSoonIssues.length}</div>
+          <div className="text-[10px] text-slate-400 font-semibold mt-1">Within 48 hours</div>
         </button>
 
         {/* Waiting */}
         <button
           onClick={() => setActiveTab("all")}
-          className="text-left rounded-xl p-4 bg-white border border-slate-200 hover:border-slate-300 transition"
+          className="text-left rounded-2xl p-4 bg-white border border-slate-200/80 shadow-card hover:border-slate-300 transition-all"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-600">Waiting</span>
-            <Clock className="h-4 w-4 text-slate-400" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">Waiting</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+              <Clock className="h-3 w-3" />
+            </span>
           </div>
-          <div className="mt-2 text-2xl font-black text-slate-800">{waitingIssues.length}</div>
-          <div className="text-[11px] text-slate-500 font-medium mt-0.5">Awaiting provider</div>
+          <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-800">{waitingIssues.length}</div>
+          <div className="text-[10px] text-slate-400 font-semibold mt-1">On provider</div>
         </button>
 
-        {/* Resolved / Closed */}
+        {/* Resolved */}
         <button
           onClick={() => setActiveTab("resolved")}
-          className={`text-left rounded-xl p-4 transition border col-span-2 sm:col-span-1 ${
-            activeTab === "resolved" ? "bg-emerald-50 border-emerald-300 ring-2 ring-emerald-500" : "bg-white border-slate-200"
+          className={`text-left rounded-2xl p-4 transition-all border col-span-2 sm:col-span-1 ${
+            activeTab === "resolved" ? "bg-emerald-50/80 border-emerald-200 ring-2 ring-emerald-500" : "bg-white border-slate-200/80 shadow-card"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">Resolved</span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Resolved</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+              <CheckCircle2 className="h-3 w-3" />
+            </span>
           </div>
-          <div className="mt-2 text-2xl font-black text-emerald-700">{resolvedIssues.length}</div>
-          <div className="text-[11px] text-slate-500 font-medium mt-0.5">Archived history</div>
+          <div className="mt-2 text-2xl sm:text-3xl font-extrabold text-emerald-700">{resolvedIssues.length}</div>
+          <div className="text-[10px] text-slate-400 font-semibold mt-1">Archived</div>
         </button>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 mb-6 overflow-x-auto">
+      {/* Segmented Filter Pills */}
+      <div className="flex items-center gap-1.5 rounded-2xl bg-slate-200/60 p-1.5 mb-6 overflow-x-auto">
         <button
           onClick={() => setActiveTab("attention")}
-          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition ${
+          className={`rounded-xl px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-all ${
             activeTab === "attention"
-              ? "bg-slate-900 text-white"
-              : "text-slate-600 hover:bg-slate-100"
+              ? "bg-white text-slate-900 shadow-sm"
+              : "text-slate-600 hover:text-slate-900"
           }`}
         >
-          Attention Hierarchy (Recommended)
+          Urgency Hierarchy (Recommended)
         </button>
         <button
           onClick={() => setActiveTab("overdue")}
-          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition flex items-center gap-1.5 ${
+          className={`rounded-xl px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
             activeTab === "overdue"
-              ? "bg-rose-600 text-white"
-              : "text-slate-600 hover:bg-slate-100"
+              ? "bg-rose-600 text-white shadow-sm"
+              : "text-slate-600 hover:text-slate-900"
           }`}
         >
           Overdue ({overdueIssues.length})
         </button>
         <button
           onClick={() => setActiveTab("action")}
-          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition ${
+          className={`rounded-xl px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-all ${
             activeTab === "action"
-              ? "bg-amber-600 text-white"
-              : "text-slate-600 hover:bg-slate-100"
+              ? "bg-amber-600 text-white shadow-sm"
+              : "text-slate-600 hover:text-slate-900"
           }`}
         >
           Action Needed ({actionNeededIssues.length})
         </button>
         <button
           onClick={() => setActiveTab("all")}
-          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition ${
+          className={`rounded-xl px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-all ${
             activeTab === "all"
-              ? "bg-slate-900 text-white"
-              : "text-slate-600 hover:bg-slate-100"
+              ? "bg-white text-slate-900 shadow-sm"
+              : "text-slate-600 hover:text-slate-900"
           }`}
         >
           All Active ({totalActive})
         </button>
         <button
           onClick={() => setActiveTab("resolved")}
-          className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition ${
+          className={`rounded-xl px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-all ${
             activeTab === "resolved"
-              ? "bg-emerald-600 text-white"
-              : "text-slate-600 hover:bg-slate-100"
+              ? "bg-emerald-600 text-white shadow-sm"
+              : "text-slate-600 hover:text-slate-900"
           }`}
         >
           Resolved ({resolvedIssues.length})
@@ -249,37 +266,37 @@ export default function DashboardPage() {
 
       {/* Content list */}
       {loading ? (
-        <div className="py-16 text-center text-sm text-slate-500">Loading issues...</div>
+        <div className="py-20 text-center text-xs text-slate-400 font-medium">Loading records...</div>
       ) : issues.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 mb-4">
-            <PlusCircle className="h-6 w-6" />
+        <div className="rounded-3xl border border-dashed border-slate-300 bg-white/70 p-12 text-center shadow-card">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-4">
+            <Inbox className="h-6 w-6" />
           </div>
-          <h3 className="text-base font-bold text-slate-900">No issues tracked yet</h3>
-          <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-            Create an issue manually or paste a messy WhatsApp message to extract structured fields.
+          <h3 className="text-base font-bold text-slate-900">No complaints or issues tracked</h3>
+          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+            Create an issue manually or paste a messy customer service message to extract structured fields.
           </p>
           <Link
             href="/issues/new"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white shadow-card hover:bg-slate-800"
           >
-            Create Your First Issue
+            Create First Issue
           </Link>
         </div>
       ) : (
         <div className="space-y-8">
           {activeTab === "attention" && (
             <>
-              {/* Section 1: OVERDUE ISSUES (Top Priority) */}
+              {/* Section 1: OVERDUE ISSUES */}
               {overdueIssues.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="flex h-2.5 w-2.5 rounded-full bg-rose-600 animate-ping" />
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-rose-700">
-                      1. Overdue Issues — Immediate Attention Required ({overdueIssues.length})
+                  <div className="flex items-center gap-2 mb-3.5">
+                    <span className="flex h-2.5 w-2.5 rounded-full bg-rose-600 animate-pulse" />
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-rose-700">
+                      1. Overdue SLA Breaches ({overdueIssues.length})
                     </h2>
                   </div>
-                  <div className="grid gap-3">
+                  <div className="grid gap-3.5">
                     {overdueIssues.map((issue) => (
                       <IssueCard key={issue.id} issue={issue} />
                     ))}
@@ -290,13 +307,13 @@ export default function DashboardPage() {
               {/* Section 2: ACTION NEEDED */}
               {actionNeededIssues.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-3.5">
                     <span className="flex h-2.5 w-2.5 rounded-full bg-amber-500" />
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-amber-800">
-                      2. Action Needed — You Need to Take Action ({actionNeededIssues.length})
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-amber-800">
+                      2. Action Needed by You ({actionNeededIssues.length})
                     </h2>
                   </div>
-                  <div className="grid gap-3">
+                  <div className="grid gap-3.5">
                     {actionNeededIssues.map((issue) => (
                       <IssueCard key={issue.id} issue={issue} />
                     ))}
@@ -307,13 +324,13 @@ export default function DashboardPage() {
               {/* Section 3: DUE SOON */}
               {dueSoonIssues.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="flex h-2.5 w-2.5 rounded-full bg-blue-500" />
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-blue-800">
-                      3. Due Soon — Approaching Promised Date ({dueSoonIssues.length})
+                  <div className="flex items-center gap-2 mb-3.5">
+                    <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500" />
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-sky-800">
+                      3. Approaching Promised Dates ({dueSoonIssues.length})
                     </h2>
                   </div>
-                  <div className="grid gap-3">
+                  <div className="grid gap-3.5">
                     {dueSoonIssues.map((issue) => (
                       <IssueCard key={issue.id} issue={issue} />
                     ))}
@@ -324,13 +341,13 @@ export default function DashboardPage() {
               {/* Section 4: WAITING / OTHER OPEN */}
               {(waitingIssues.length > 0 || otherOpenIssues.length > 0) && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-3.5">
                     <span className="flex h-2.5 w-2.5 rounded-full bg-slate-400" />
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
-                      4. In Progress / Waiting on Provider ({waitingIssues.length + otherOpenIssues.length})
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                      4. In Progress / Awaiting Provider ({waitingIssues.length + otherOpenIssues.length})
                     </h2>
                   </div>
-                  <div className="grid gap-3">
+                  <div className="grid gap-3.5">
                     {[...waitingIssues, ...otherOpenIssues].map((issue) => (
                       <IssueCard key={issue.id} issue={issue} />
                     ))}
@@ -340,19 +357,19 @@ export default function DashboardPage() {
 
               {/* Section 5: RESOLVED PREVIEW */}
               {resolvedIssues.length > 0 && (
-                <div className="pt-4 border-t border-slate-200">
-                  <div className="flex items-center justify-between mb-3">
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                      Recently Resolved / Closed ({resolvedIssues.length})
+                <div className="pt-4 border-t border-slate-200/80">
+                  <div className="flex items-center justify-between mb-3.5">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      Archived / Resolved ({resolvedIssues.length})
                     </h2>
                     <button
                       onClick={() => setActiveTab("resolved")}
-                      className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold"
+                      className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold transition"
                     >
-                      View all resolved →
+                      View all archived →
                     </button>
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-2.5">
                     {resolvedIssues.slice(0, 2).map((issue) => (
                       <IssueCard key={issue.id} issue={issue} compact />
                     ))}
@@ -363,9 +380,9 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "overdue" && (
-            <div className="grid gap-3">
+            <div className="grid gap-3.5">
               {overdueIssues.length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+                <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
                   No overdue issues! All service promises are on track.
                 </div>
               ) : (
@@ -375,9 +392,9 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "action" && (
-            <div className="grid gap-3">
+            <div className="grid gap-3.5">
               {actionNeededIssues.length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+                <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
                   No items requiring your action right now.
                 </div>
               ) : (
@@ -387,7 +404,7 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "all" && (
-            <div className="grid gap-3">
+            <div className="grid gap-3.5">
               {[...overdueIssues, ...actionNeededIssues, ...dueSoonIssues, ...waitingIssues, ...otherOpenIssues].map(
                 (issue) => (
                   <IssueCard key={issue.id} issue={issue} />
@@ -397,9 +414,9 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "resolved" && (
-            <div className="grid gap-3">
+            <div className="grid gap-3.5">
               {resolvedIssues.length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
+                <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-xs text-slate-500">
                   No resolved issues yet.
                 </div>
               ) : (
@@ -417,34 +434,34 @@ function IssueCard({ issue, compact = false }: { issue: IssueItem; compact?: boo
   const getStatusBadge = (status: IssueStatus) => {
     switch (status) {
       case "open":
-        return <span className="rounded bg-slate-100 text-slate-800 px-2 py-0.5 text-[11px] font-semibold">Open</span>;
+        return <span className="rounded-full bg-slate-100 text-slate-800 px-2.5 py-0.5 text-[10px] font-bold">Open</span>;
       case "waiting":
-        return <span className="rounded bg-sky-100 text-sky-800 px-2 py-0.5 text-[11px] font-semibold">Waiting</span>;
+        return <span className="rounded-full bg-sky-100 text-sky-800 px-2.5 py-0.5 text-[10px] font-bold">Waiting</span>;
       case "action_needed":
-        return <span className="rounded bg-amber-100 text-amber-800 px-2 py-0.5 text-[11px] font-semibold">Action Needed</span>;
+        return <span className="rounded-full bg-amber-100 text-amber-900 px-2.5 py-0.5 text-[10px] font-bold">Action Needed</span>;
       case "resolved":
-        return <span className="rounded bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[11px] font-semibold">Resolved</span>;
+        return <span className="rounded-full bg-emerald-100 text-emerald-800 px-2.5 py-0.5 text-[10px] font-bold">Resolved</span>;
       case "closed":
-        return <span className="rounded bg-slate-200 text-slate-700 px-2 py-0.5 text-[11px] font-semibold">Closed</span>;
+        return <span className="rounded-full bg-slate-200 text-slate-700 px-2.5 py-0.5 text-[10px] font-bold">Closed</span>;
     }
   };
 
   return (
     <Link
       href={`/issues/${issue.id}`}
-      className={`group block rounded-xl border bg-white transition hover:shadow-md ${
+      className={`group block rounded-2xl border bg-white/95 transition-all hover:shadow-elevated ${
         issue.isOverdue && issue.status !== "resolved" && issue.status !== "closed"
-          ? "border-rose-300 hover:border-rose-400 ring-1 ring-rose-200"
-          : "border-slate-200 hover:border-indigo-300"
-      } p-4 sm:p-5`}
+          ? "border-rose-300/90 ring-1 ring-rose-200 hover:border-rose-400"
+          : "border-slate-200/80 hover:border-indigo-300"
+      } p-5`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+          <span className="font-bold text-xs text-indigo-700 bg-indigo-50/80 px-2.5 py-1 rounded-lg border border-indigo-100/80">
             {issue.company}
           </span>
           {issue.referenceNo && (
-            <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+            <span className="font-mono text-xs text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-md">
               #{issue.referenceNo}
             </span>
           )}
@@ -455,13 +472,13 @@ function IssueCard({ issue, compact = false }: { issue: IssueItem; compact?: boo
 
         <div className="flex items-center gap-2">
           {issue.isOverdue && (
-            <span className="inline-flex items-center gap-1 rounded bg-rose-600 px-2 py-0.5 text-[11px] font-bold text-white shadow-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs">
               <AlertTriangle className="h-3 w-3" />
               {issue.attentionLabel}
             </span>
           )}
           {!issue.isOverdue && issue.isDueSoon && (
-            <span className="inline-flex items-center gap-1 rounded bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-800">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-0.5 text-[11px] font-bold text-sky-800">
               <Clock className="h-3 w-3" />
               {issue.attentionLabel}
             </span>
@@ -470,7 +487,7 @@ function IssueCard({ issue, compact = false }: { issue: IssueItem; compact?: boo
         </div>
       </div>
 
-      <div className="mt-2.5 flex items-start justify-between gap-4">
+      <div className="mt-3 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition">
             {issue.title}
@@ -481,22 +498,24 @@ function IssueCard({ issue, compact = false }: { issue: IssueItem; compact?: boo
             </p>
           )}
         </div>
-        <ChevronRight className="h-5 w-5 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition shrink-0 mt-1" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition shrink-0 mt-0.5">
+          <ChevronRight className="h-4 w-4" />
+        </div>
       </div>
 
       {!compact && issue.nextAction && (
-        <div className="mt-3 flex items-center gap-2 rounded-lg bg-amber-50/70 border border-amber-200/80 px-3 py-1.5 text-xs text-amber-900">
+        <div className="mt-3.5 flex items-center gap-2 rounded-xl bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 text-xs text-amber-950">
           <span className="font-bold text-[10px] uppercase text-amber-700 shrink-0">Next Action:</span>
-          <span className="truncate font-medium">{issue.nextAction}</span>
+          <span className="truncate font-semibold">{issue.nextAction}</span>
         </div>
       )}
 
       {!compact && (
-        <div className="mt-3 flex items-center justify-between text-[11px] text-slate-400 pt-2.5 border-t border-slate-100">
-          <div className="flex items-center gap-1">
-            <Calendar className="h-3 w-3" />
+        <div className="mt-3.5 flex items-center justify-between text-[11px] text-slate-400 pt-3 border-t border-slate-100">
+          <div className="flex items-center gap-1.5">
+            <Calendar className="h-3.5 w-3.5" />
             <span>
-              {issue.expectedDate ? `Expected: ${issue.expectedDate}` : `Created: ${issue.createdAt.split("T")[0]}`}
+              {issue.expectedDate ? `Promised: ${issue.expectedDate}` : `Created: ${issue.createdAt.split("T")[0]}`}
             </span>
           </div>
           <span>Updated {new Date(issue.updatedAt).toLocaleDateString()}</span>

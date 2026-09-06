@@ -14,6 +14,7 @@ import {
   FileSpreadsheet,
   AlertTriangle,
   Loader2,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -101,57 +102,59 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 mb-6 transition"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 mb-6 transition"
       >
         <ArrowLeft className="h-4 w-4" /> Back to Dashboard
       </Link>
 
-      <div className="border-b border-slate-200 pb-4 mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Account & Privacy Settings</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Manage your account profile, export your personal records, or permanently wipe your data
+      <div className="border-b border-slate-200/80 pb-5 mb-8">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Settings & Privacy
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          Export your complaint history, manage security, or delete your account
         </p>
       </div>
 
       <div className="space-y-6">
         {/* Profile Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
+          <div className="flex items-center gap-3.5 mb-5">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-subtle">
               <User className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">User Profile</h2>
-              <p className="text-xs text-slate-500">Your private authentication identity</p>
+              <h2 className="text-base font-bold text-slate-900">User Identity</h2>
+              <p className="text-xs text-slate-500">Authenticated user context</p>
             </div>
           </div>
 
-          <div className="rounded-xl bg-slate-50 p-4 border border-slate-100 space-y-2 text-xs">
-            <div className="flex justify-between">
+          <div className="rounded-2xl bg-slate-50/70 p-4 border border-slate-100 space-y-2.5 text-xs">
+            <div className="flex justify-between items-center">
               <span className="text-slate-400 font-medium">Email:</span>
-              <span className="font-semibold text-slate-800">{user?.email || "Loading..."}</span>
+              <span className="font-bold text-slate-800">{user?.email || "Loading..."}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span className="text-slate-400 font-medium">Name:</span>
-              <span className="font-semibold text-slate-800">{user?.name || "Demo User"}</span>
+              <span className="font-bold text-slate-800">{user?.name || "Demo User"}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400 font-medium">User ID:</span>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-400 font-medium">User Identifier:</span>
               <span className="font-mono text-slate-600">{user?.id || "..."}</span>
             </div>
           </div>
         </div>
 
         {/* Export Data Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
+          <div className="flex items-center gap-3.5 mb-2">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 shadow-subtle">
               <Download className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Export Your Data</h2>
+              <h2 className="text-base font-bold text-slate-900">Data Portability & Export</h2>
               <p className="text-xs text-slate-500">
-                You own your records. Download your issues and full timeline history at any time.
+                You own your records. Export your complaints and chronological logs at any time.
               </p>
             </div>
           </div>
@@ -160,7 +163,7 @@ export default function SettingsPage() {
             <button
               onClick={() => handleExport("csv")}
               disabled={exporting !== null}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-subtle transition active:scale-[0.98]"
             >
               {exporting === "csv" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -173,7 +176,7 @@ export default function SettingsPage() {
             <button
               onClick={() => handleExport("json")}
               disabled={exporting !== null}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-subtle transition active:scale-[0.98]"
             >
               {exporting === "json" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -186,65 +189,70 @@ export default function SettingsPage() {
         </div>
 
         {/* Privacy & Guardrails Statement */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-card">
+          <div className="flex items-center gap-3.5 mb-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-subtle">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Privacy & Security Controls</h2>
-              <p className="text-xs text-slate-500">How FixFlow protects your private data</p>
+              <h2 className="text-base font-bold text-slate-900">Privacy & Security Guarantees</h2>
+              <p className="text-xs text-slate-500">Built to ensure confidentiality of personal service data</p>
             </div>
           </div>
 
-          <ul className="mt-4 space-y-2.5 text-xs text-slate-600 list-disc list-inside leading-relaxed">
-            <li>
-              <strong>No Automatic Inbox Scraping:</strong> We will never read your email inbox or
-              WhatsApp conversations in the background.
-            </li>
-            <li>
-              <strong>Strict Row-Level Isolation:</strong> Database queries are always locked to your
-              user account.
-            </li>
-            <li>
-              <strong>No Secret Keys in Frontend:</strong> All LLM and storage calls happen purely
-              server-side.
-            </li>
-          </ul>
+          <div className="mt-4 grid gap-3 text-xs text-slate-600">
+            <div className="flex items-start gap-2.5 rounded-xl bg-slate-50/60 p-3 border border-slate-100">
+              <CheckCircle2 className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
+              <span>
+                <strong>Zero Automatic Mailbox Access:</strong> FixFlow will never connect to or scrape your private email or messaging inboxes.
+              </span>
+            </div>
+            <div className="flex items-start gap-2.5 rounded-xl bg-slate-50/60 p-3 border border-slate-100">
+              <CheckCircle2 className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
+              <span>
+                <strong>Owner-Scoped Queries:</strong> Database row-level security isolates all issues, timeline events, and attachments strictly to your account.
+              </span>
+            </div>
+            <div className="flex items-start gap-2.5 rounded-xl bg-slate-50/60 p-3 border border-slate-100">
+              <CheckCircle2 className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
+              <span>
+                <strong>No Secrets in Frontend:</strong> All LLM API keys and database credentials reside securely on the server.
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Danger Zone: Account Deletion */}
-        <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 sm:p-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
+        <div className="rounded-3xl border border-rose-200 bg-rose-50/40 p-6 sm:p-8 shadow-card">
+          <div className="flex items-center gap-3.5 mb-2">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-100 text-rose-700 shadow-subtle">
               <Trash2 className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-rose-950">Delete Account & Wipe Data</h2>
+              <h2 className="text-base font-bold text-rose-950">Permanently Delete Account & Data</h2>
               <p className="text-xs text-rose-700">
-                Permanently purge your account, all tracked issues, timelines, and attachments
+                Purges your account, all tracked issues, timelines, and file attachments
               </p>
             </div>
           </div>
 
           <p className="mt-3 text-xs text-rose-600/90 leading-relaxed">
-            Once you delete your account, your data cannot be recovered. Ensure you have exported
-            any needed records before proceeding.
+            Account deletion is immediate and permanent. Export any required history prior to deletion.
           </p>
 
-          <div className="mt-4">
+          <div className="mt-5">
             <button
               onClick={handleDeleteAccount}
               disabled={deleting}
-              className="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 shadow-sm transition disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-rose-700 shadow-sm transition active:scale-[0.98] disabled:opacity-50"
             >
               {deleting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Wiping Data...
+                  <Loader2 className="h-4 w-4 animate-spin" /> Purging Records...
                 </>
               ) : (
                 <>
-                  <Trash2 className="h-4 w-4" /> Delete My Account & All Data
+                  <Trash2 className="h-4 w-4" /> Delete My Account & Wipe All Data
                 </>
               )}
             </button>

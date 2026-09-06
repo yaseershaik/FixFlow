@@ -8,44 +8,31 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-jakarta)", "var(--font-inter)", "system-ui", "sans-serif"],
+        heading: ["var(--font-jakarta)", "system-ui", "sans-serif"],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        status: {
-          overdue: {
-            bg: "#fef2f2",
-            border: "#fecaca",
-            text: "#b91c1c",
-            badge: "#dc2626",
-          },
-          action: {
-            bg: "#fffbeb",
-            border: "#fde68a",
-            text: "#b45309",
-            badge: "#d97706",
-          },
-          waiting: {
-            bg: "#f0f9ff",
-            border: "#bae6fd",
-            text: "#0369a1",
-            badge: "#0284c7",
-          },
-          resolved: {
-            bg: "#f0fdf4",
-            border: "#bbf7d0",
-            text: "#15803d",
-            badge: "#16a34a",
-          },
-          closed: {
-            bg: "#f8fafc",
-            border: "#e2e8f0",
-            text: "#475569",
-            badge: "#64748b",
-          },
+        brand: {
+          50: "#eef2ff",
+          100: "#e0e7ff",
+          200: "#c7d2fe",
+          300: "#a5b4fc",
+          400: "#818cf8",
+          500: "#6366f1",
+          600: "#4f46e5",
+          700: "#4338ca",
+          800: "#3730a3",
+          900: "#312e81",
         },
       },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+      boxShadow: {
+        subtle: "0 1px 2px 0 rgb(0 0 0 / 0.03)",
+        card: "0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
+        elevated: "0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05)",
+        floating: "0 10px 25px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04)",
+        glow: "0 0 20px -5px rgba(99, 102, 241, 0.35)",
+        "glow-rose": "0 0 20px -5px rgba(244, 63, 94, 0.35)",
       },
     },
   },
