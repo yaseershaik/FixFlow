@@ -23,9 +23,7 @@ A privacy-first consumer grievance tracking platform that helps users document c
 | Active Complaints Dashboard | Chronological Dispute Timeline |
 | :---: | :---: |
 | ![Dashboard Overview](docs/screenshots/02-dashboard.jpg) | ![Complaint Timeline](docs/screenshots/03-complaint-timeline.jpg) |
-
-| Statutory Legal Notice Generator | Mobile Experience |
-| :---: | :---: |
+| **Statutory Legal Notice Generator** | **Mobile Experience** |
 | ![Formal Escalation Letter](docs/screenshots/04-escalation-letter.png) | ![Mobile View](docs/screenshots/05-mobile-view.jpg) |
 
 ---
