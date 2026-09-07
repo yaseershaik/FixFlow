@@ -24,10 +24,14 @@ export async function POST(req: NextRequest) {
           passwordHash: hashPassword("demo123"),
         },
       });
+      await resetDemoAccount(user.id);
+    } else {
+      // Ensure seed complaints exist if account was somehow cleared
+      const count = await db.issue.count({ where: { userId: user.id } });
+      if (count === 0) {
+        await resetDemoAccount(user.id);
+      }
     }
-
-    // Always reset the demo account to clean seed data on session launch
-    await resetDemoAccount(user.id);
 
     const demoDurationSeconds = 2 * 60 * 60; // 2 hours
     const token = createSessionToken(
@@ -51,8 +55,9 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Demo launch error:", error instanceof Error ? error.message : "Internal error");
-    return apiError("Failed to initialize demo sandbox", "INTERNAL_ERROR", 500);
+    const errorMsg = error instanceof Error ? error.message : "Internal error";
+    console.error("Demo launch error:", errorMsg);
+    return apiError(`Failed to initialize demo sandbox: ${errorMsg}`, "INTERNAL_ERROR", 500);
   }
 }
 

@@ -150,6 +150,16 @@ function LandingPageContent() {
       });
       if (res.ok) {
         router.push("/dashboard");
+        return;
+      }
+      // Fallback: direct demo credential authentication
+      const loginRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "demo@fixflow.app", password: "demo123", rememberMe: true }),
+      });
+      if (loginRes.ok) {
+        router.push("/dashboard");
       } else {
         router.push("/login");
       }

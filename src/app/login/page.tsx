@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, Loader2, Mail, Lock } from "lucide-react";
+import { CheckCircle2, Loader2, Mail, Lock, Sparkles } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
@@ -22,6 +22,35 @@ function LoginForm() {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingDemo, setLoadingDemo] = useState(false);
+
+  const handleDemoLogin = async () => {
+    setError("");
+    setLoadingDemo(true);
+    try {
+      const res = await fetch("/api/auth/demo", { method: "POST" });
+      if (res.ok) {
+        router.push(redirectTarget);
+        return;
+      }
+      // Fallback: direct credentials login
+      const loginRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "demo@fixflow.app", password: "demo123", rememberMe: true }),
+      });
+      if (loginRes.ok) {
+        router.push(redirectTarget);
+      } else {
+        const data = await loginRes.json().catch(() => null);
+        setError(data?.error?.message || "Failed to initialize demo sandbox");
+      }
+    } catch {
+      setError("Network error connecting to demo sandbox. Please try again.");
+    } finally {
+      setLoadingDemo(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,7 +167,7 @@ function LoginForm() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || loadingDemo}
             className="w-full rounded-xl bg-slate-900 py-3 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-slate-800 disabled:opacity-50 transition active:scale-[0.98] flex items-center justify-center gap-2 min-h-[44px]"
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
@@ -146,7 +175,30 @@ function LoginForm() {
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-500 pt-3 border-t border-slate-100">
+        <div className="relative my-3">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-slate-200"></div>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-slate-400 font-semibold">Or Explore</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleDemoLogin}
+          disabled={loadingDemo || loading}
+          className="w-full rounded-xl border border-amber-200 bg-amber-50/70 hover:bg-amber-100/80 py-3 text-xs sm:text-sm font-bold text-amber-900 shadow-xs transition active:scale-[0.98] flex items-center justify-center gap-2 min-h-[44px]"
+        >
+          {loadingDemo ? (
+            <Loader2 className="h-4 w-4 animate-spin text-amber-700" />
+          ) : (
+            <Sparkles className="h-4 w-4 text-amber-600" />
+          )}
+          <span>{loadingDemo ? "Launching Demo..." : "Try Live Demo (1-Click)"}</span>
+        </button>
+
+        <p className="text-center text-xs text-slate-500 pt-2 border-t border-slate-100">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="font-bold text-slate-900 hover:underline">
             Create free account

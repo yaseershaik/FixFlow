@@ -1,6 +1,4 @@
 import { db } from "@/lib/db";
-import fs from "fs";
-import path from "path";
 
 export const DEMO_EMAIL = "demo@fixflow.app";
 
@@ -20,20 +18,23 @@ export async function resetDemoAccount(userId?: string) {
     targetId = demoUser.id;
   }
 
-  // 1. Delete all existing issues and child records for demo user
+  // 1. Delete all existing child records first (respecting foreign key constraints)
   await db.issueEvent.deleteMany({ where: { userId: targetId } });
   await db.attachment.deleteMany({ where: { userId: targetId } });
   await db.reminder.deleteMany({ where: { userId: targetId } });
+  await db.extractionRun.deleteMany({ where: { userId: targetId } });
   await db.issue.deleteMany({ where: { userId: targetId } });
 
-  // Clean up physical disk uploads for demo user to avoid storage exhaustion
+  // Clean up physical disk uploads for demo user (only works in local dev, safely skipped on serverless)
   try {
+    const fs = await import("fs");
+    const path = await import("path");
     const demoUploadsDir = path.join(process.cwd(), "uploads", targetId);
     if (fs.existsSync(demoUploadsDir)) {
       fs.rmSync(demoUploadsDir, { recursive: true, force: true });
     }
-  } catch (fsErr) {
-    console.warn("Failed to clean demo physical uploads:", fsErr);
+  } catch {
+    // Silently skip — filesystem cleanup is optional on serverless platforms (Vercel)
   }
 
   const now = new Date();
