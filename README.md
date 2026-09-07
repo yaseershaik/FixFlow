@@ -1,4 +1,4 @@
-# FixFlow � Consumer Grievance & Statutory Dispute Tracker
+﻿# FixFlow — Consumer Grievance & Statutory Dispute Tracker
 
 [![Live Demo](https://img.shields.io/badge/Live_App-getfixflow.vercel.app-10b981?style=for-the-badge&logo=vercel&logoColor=white)](https://getfixflow.vercel.app)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2.15-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
@@ -13,70 +13,70 @@
 
 It converts chaotic WhatsApp messages, customer support emails, service job-sheets, and SMS updates into structured, legally defensible timelines, tracks statutory limitation windows, and generates formal legal demand notices ready for **NCH 1915** and **e-Daakhil** consumer commission filings.
 
-?? **Production Application**: [https://getfixflow.vercel.app](https://getfixflow.vercel.app)  
-?? **Source Code**: [https://github.com/yaseershaik/FixFlow](https://github.com/yaseershaik/FixFlow)
+🌐 **Production Application**: [https://getfixflow.vercel.app](https://getfixflow.vercel.app)  
+📁 **Source Code**: [https://github.com/yaseershaik/FixFlow](https://github.com/yaseershaik/FixFlow)
 
 ---
 
-## ? Instant 1-Click Sandbox Demo
+## ⚡ Instant 1-Click Sandbox Demo
 
 Test the live application immediately without registering:
 - **Live URL**: [https://getfixflow.vercel.app/login](https://getfixflow.vercel.app/login)
 - **Demo Email**: `demo@fixflow.app`
-- **Demo Password**: `demo123`
+- **Demo Password**: `demo123`  
 *(Or simply click **"Try Live Demo (1-Click)"** on the landing page for instant access)*
 
 ---
 
-## ??? Application Previews & User Flows
+## 🖥️ Application Previews & User Flows
 
 ```text
-+----------------------------------------------------------------------------------------+
-�  FixFlow � Dashboard & Statutory Dispute Tracker                                       �
-+----------------------------------------------------------------------------------------�
-�                                                                                        �
-�  [OVERDUE ALERT] ?? 2 Disputes Exceeded Statutory Resolution Window                    �
-�                                                                                        �
-�  +----------------------------------------------------------------------------------+  �
-�  � ? Flipkart Internet Pvt Ltd � ?18,499 Refund Dispute                             �  �
-�  � Status: ESCALATED  |  Ref: OD309823901  |  Promised Date: 5 Days Ago (OVERDUE)   �  �
-�  � Statutory Action: Section 35 Legal Notice Generated (NCH 1915 Escalation)       �  �
-�  +----------------------------------------------------------------------------------+  �
-�  +----------------------------------------------------------------------------------+  �
-�  � ? Airtel Broadband (Bharti Airtel) � Continuous Fiber Outage & SLA Breach        �  �
-�  � Status: PENDING    |  Ref: AIR-882190  |  Promised Date: Yesterday (OVERDUE)     �  �
-�  � Statutory Action: TRAI Quality of Service Rebate Notice Pending                 �  �
-�  +----------------------------------------------------------------------------------+  �
-�                                                                                        �
-�  [QUICK ACTIONS]                                                                       �
-�  [+ New Complaint]    [?? Generate Legal Notice]    [? Parse Bill/Email]   [?? Quotas] �
-�                                                                                        �
-+----------------------------------------------------------------------------------------+
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│  FixFlow — Dashboard & Statutory Dispute Tracker                                       │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│  [OVERDUE ALERT] 🔴 2 Disputes Exceeded Statutory Resolution Window                    │
+│                                                                                        │
+│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ ⚡ Flipkart Internet Pvt Ltd — ₹18,499 Refund Dispute                             │  │
+│  │ Status: ESCALATED  |  Ref: OD309823901  |  Promised Date: 5 Days Ago (OVERDUE)   │  │
+│  │ Statutory Action: Section 35 Legal Notice Generated (NCH 1915 Escalation)       │  │
+│  └──────────────────────────────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
+│  │ ⚡ Airtel Broadband (Bharti Airtel) — Continuous Fiber Outage & SLA Breach        │  │
+│  │ Status: PENDING    |  Ref: AIR-882190  |  Promised Date: Yesterday (OVERDUE)     │  │
+│  │ Statutory Action: TRAI Quality of Service Rebate Notice Pending                 │  │
+│  └──────────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                        │
+│  [QUICK ACTIONS]                                                                       │
+│  [+ New Complaint]    [📋 Generate Legal Notice]    [⚡ Parse Bill/Email]   [📊 Quotas] │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ```text
-+----------------------------------------------------------------------------------------+
-�  Statutory Legal Notice Generator (CPA 2019 / NCH / e-Daakhil)                         �
-+----------------------------------------------------------------------------------------�
-�                                                                                        �
-�  RE: FORMAL LEGAL NOTICE UNDER SECTION 35 OF THE CONSUMER PROTECTION ACT, 2019         �
-�                                                                                        �
-�  To: Grievance Officer, Flipkart Internet Pvt Ltd                                      �
-�  Subject: Deficiency of Service & Unfair Trade Practice � Order #OD309823901           �
-�                                                                                        �
-�  1. That on 12/08/2026, the Complainant purchased an electronics item for ?18,499...  �
-�  2. That the item received was damaged, returned, and verified by courier on 15/08...  �
-�  3. That despite 4 formal reminders, the refund was arbitrarily withheld...            �
-�  4. DEMAND: Immediate refund of ?18,499 + ?5,000 compensation within 15 days...       �
-�                                                                                        �
-�  [?? Copy Formal Notice]   [?? File on e-Daakhil Portal]   [?? Dial NCH 1915]           �
-�                                                                                        �
-+----------------------------------------------------------------------------------------+
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│  Statutory Legal Notice Generator (CPA 2019 / NCH / e-Daakhil)                         │
+├────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                        │
+│  RE: FORMAL LEGAL NOTICE UNDER SECTION 35 OF THE CONSUMER PROTECTION ACT, 2019         │
+│                                                                                        │
+│  To: Grievance Officer, Flipkart Internet Pvt Ltd                                      │
+│  Subject: Deficiency of Service & Unfair Trade Practice — Order #OD309823901           │
+│                                                                                        │
+│  1. That on 12/08/2026, the Complainant purchased an electronics item for ₹18,499...  │
+│  2. That the item received was damaged, returned, and verified by courier on 15/08...  │
+│  3. That despite 4 formal reminders, the refund was arbitrarily withheld...            │
+│  4. DEMAND: Immediate refund of ₹18,499 + ₹5,000 compensation within 15 days...       │
+│                                                                                        │
+│  [📋 Copy Formal Notice]   [⚖️ File on e-Daakhil Portal]   [📞 Dial NCH 1915]           │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## ??? System Architecture
+## 🏛️ System Architecture
 
 FixFlow leverages a modern, decoupled **Next.js App Router** architecture deployed at the **Vercel Edge Network**, connected to a high-performance **Supabase PostgreSQL** database via Prisma ORM connection pooling.
 
@@ -85,17 +85,17 @@ graph TD
     Client["Client Devices<br/>(Desktop, Tablet, Mobile PWA)"] --> EdgeCDN["Vercel Global Edge Network (CDN)"]
     
     subgraph EdgePerimeter ["Security & Edge Boundary"]
-        EdgeCDN --> EdgeMW["Edge Middleware (src/middleware.ts)<br/>� Cryptographic HMAC Token Verification<br/>� Zero-Trust Route Guarding<br/>� Strict Security Headers (CSP, HSTS, X-Frame)"]
+        EdgeCDN --> EdgeMW["Edge Middleware (src/middleware.ts)<br/>• Cryptographic HMAC Token Verification<br/>• Zero-Trust Route Guarding<br/>• Strict Security Headers (CSP, HSTS, X-Frame)"]
     end
 
     subgraph AppRouter ["Next.js 14 App Router (Server & Client Components)"]
         Landing["Landing & Edu Guides<br/>(Static / SSG)"]
-        BlogEngine["SEO Blog Engine (/blog)<br/>� Position #0 FAQPage JSON-LD<br/>� Legal Notice Templates"]
-        AuthModule["Auth Controller (/api/auth/*)<br/>� scrypt Password Hashing (RFC 7914)<br/>� Constant-Time TimingSafeEqual"]
-        GrievanceModule["Grievance Lifecycle Engine (/api/issues/*)<br/>� Statutory Escalation Calculator<br/>� Limitation Period (CPA Sec 69)"]
-        ExtractorModule["Evidence OCR & Heuristics (/api/extract)<br/>� Offline Regex Heuristic Parser<br/>� Zero Cloud Latency / $0 Cost"]
-        UploadModule["Secure File Streamer (/api/uploads/*)<br/>� Magic-Byte File Validation<br/>� Path-Traversal Neutralizer"]
-        QuotaModule["Fair-Use Engine (/api/user/usage)<br/>� Storage Caps & Demo 2-hr Purge"]
+        BlogEngine["SEO Blog Engine (/blog)<br/>• Position #0 FAQPage JSON-LD<br/>• Legal Notice Templates"]
+        AuthModule["Auth Controller (/api/auth/*)<br/>• scrypt Password Hashing (RFC 7914)<br/>• Constant-Time TimingSafeEqual"]
+        GrievanceModule["Grievance Lifecycle Engine (/api/issues/*)<br/>• Statutory Escalation Calculator<br/>• Limitation Period (CPA Sec 69)"]
+        ExtractorModule["Evidence OCR & Heuristics (/api/extract)<br/>• Offline Regex Heuristic Parser<br/>• Zero Cloud Latency / $0 Cost"]
+        UploadModule["Secure File Streamer (/api/uploads/*)<br/>• Magic-Byte File Validation<br/>• Path-Traversal Neutralizer"]
+        QuotaModule["Fair-Use Engine (/api/user/usage)<br/>• Storage Caps & Demo 2-hr Purge"]
     end
 
     subgraph DataLayer ["Data & Persistence Layer"]
@@ -121,10 +121,10 @@ graph TD
 
 ---
 
-## ?? Key Features & Engineering Highlights
+## 🌟 Key Features & Engineering Highlights
 
 ### 1. Statutory Grievance & Timeline Lifecycle Engine
-- **Consumer Protection Act, 2019 Compliance**: Unlike generic ticket tools, complaints track formal escalation states: `open` ? `waiting` ? `action_needed` ? `resolved` ? `closed`.
+- **Consumer Protection Act, 2019 Compliance**: Unlike generic ticket tools, complaints track formal escalation states: `open` → `waiting` → `action_needed` → `resolved` → `closed`.
 - **Statutory Limitation Engine (Section 69)**: Tracks the 2-year limitation period from the date of the cause of action, preventing claims from lapsing before reaching consumer forums.
 - **Chronological Evidence Trail**: Logs calls, emails, customer care interactions, and service visits with immutable timestamps.
 - **Overdue Visual Urgency**: Computes SLA breaches in real-time and highlights critical deadlines with high-contrast alert badges.
@@ -154,7 +154,7 @@ graph TD
 
 ---
 
-## ?? Security Architecture & Penetration Hardening
+## 🔒 Security Architecture & Penetration Hardening
 
 FixFlow was rigorously audited and passed **40 out of 40 automated penetration tests**:
 
@@ -172,7 +172,7 @@ FixFlow was rigorously audited and passed **40 out of 40 automated penetration t
 
 ---
 
-## ?? Quickstart (Local Development)
+## 🚀 Quickstart (Local Development)
 
 ### 1. Clone & Install
 ```bash
@@ -205,7 +205,7 @@ Visit [http://localhost:3000](http://localhost:3000) and log in with `demo@fixfl
 
 ---
 
-## ?? Test Suite
+## 🧪 Test Suite
 
 FixFlow includes an automated testing suite powered by Vitest:
 
@@ -225,11 +225,11 @@ npm run test
 
 ---
 
-## ?? Featured Project Entry (For Portfolio & Resume)
+## 🎯 Core Technical Achievements
 
-Copy-paste ready entry for your resume, portfolio website, or GitHub profile:
+Key architectural and engineering implementations powering FixFlow:
 
-### **FixFlow � Consumer Grievance & Statutory Dispute Tracker**
+### **FixFlow — Consumer Grievance & Statutory Dispute Tracker**
 *Next.js 14 App Router, TypeScript, Prisma ORM, PostgreSQL (Supabase), Tailwind CSS, Vitest*  
 **Live Application**: [https://getfixflow.vercel.app](https://getfixflow.vercel.app) | **Repository**: [https://github.com/yaseershaik/FixFlow](https://github.com/yaseershaik/FixFlow)
 
@@ -242,5 +242,5 @@ Copy-paste ready entry for your resume, portfolio website, or GitHub profile:
 
 ---
 
-## ?? License
-MIT License � 2026 FixFlow. Built for Indian consumers.
+## 📄 License
+MIT License © 2026 FixFlow. Built for Indian consumers.
