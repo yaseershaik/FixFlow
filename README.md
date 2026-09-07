@@ -20,25 +20,13 @@ A privacy-first consumer grievance tracking platform that helps users document c
 
 ## Screenshots
 
-### Dashboard & Active Follow-ups
-Organizes complaints by urgency (Overdue, Action Needed, Waiting, Resolved) with countdowns to promised resolution dates.
-![Dashboard Overview](docs/screenshots/02-dashboard.jpg)
+| Active Complaints Dashboard | Chronological Dispute Timeline |
+| :---: | :---: |
+| ![Dashboard Overview](docs/screenshots/02-dashboard.jpg) | ![Complaint Timeline](docs/screenshots/03-complaint-timeline.jpg) |
 
-### Chronological Evidence Timeline
-Tracks the complete interaction history—customer calls, emails, service technician visits, and uploaded proofs—in a single immutable log.
-![Complaint Timeline](docs/screenshots/03-complaint-timeline.jpg)
-
-### Statutory Legal Notice Generator
-Compiles docket history, dates, monetary damages, and statutory violations into an escalation-ready demand notice for NCH 1915 or e-Daakhil filing.
-![Formal Escalation Letter](docs/screenshots/04-escalation-letter.png)
-
-### Landing Page & Consumer Education
-Introduces core complaint-tracking workflows and connects consumers with National Consumer Helpline resources.
-![Landing Page](docs/screenshots/01-landing-page.jpg)
-
-### Mobile Experience
-Fully responsive interface with mobile-optimized navigation and touch-friendly controls.
-![Mobile View](docs/screenshots/05-mobile-view.jpg)
+| Statutory Legal Notice Generator | Mobile Experience |
+| :---: | :---: |
+| ![Formal Escalation Letter](docs/screenshots/04-escalation-letter.png) | ![Mobile View](docs/screenshots/05-mobile-view.jpg) |
 
 ---
 
@@ -47,6 +35,12 @@ Fully responsive interface with mobile-optimized navigation and touch-friendly c
 When consumers face service delays, rejected refunds, or defective goods, communication is usually scattered across WhatsApp messages, emails, SMS alerts, call notes, and customer support tickets. 
 
 Key details like reference numbers, promised resolution dates, and agent commitments are easily forgotten. When companies fail to resolve the issue, consumers lack a clear, organized paper trail to escalate their grievance to nodal officers or consumer redressal forums (such as NCH 1915 or e-Daakhil), often letting valid claims lapse past statutory limitation periods.
+
+---
+
+## Why I Built It
+
+I built FixFlow to explore how a real-world consumer problem could be converted into a structured software system—from capturing unstructured complaint data to tracking deadlines, protecting user data, and generating actionable escalation documents.
 
 ---
 
@@ -80,12 +74,12 @@ FixFlow provides an organized, owner-controlled tracking layer for service dispu
 FixFlow uses a modern Next.js App Router architecture deployed on Vercel's global edge network, paired with a Supabase PostgreSQL database via connection pooling.
 
 ```mermaid
-graph LR
-    User["User (Browser / Mobile)"] --> NextApp["Next.js 14 App Router (Vercel Edge)"]
-    NextApp --> EdgeMW["Edge Middleware<br/>(HMAC Session Auth & Security Headers)"]
-    EdgeMW --> Logic["API & Business Logic<br/>(Lifecycles, Quotas, Notice Generator)"]
-    Logic --> DB[("Supabase PostgreSQL<br/>(Prisma Connection Pooler)")]
-    Logic -.-> AI["Optional Cloud AI<br/>(Gemini / OpenAI Fallback)"]
+flowchart LR
+    User["User Client (Browser / Mobile)"] --> NextApp["Next.js 14 App Router (Vercel)"]
+    NextApp --> EdgeMW["Edge Middleware (HMAC Auth)"]
+    EdgeMW --> Logic["API & Business Logic"]
+    Logic --> DB[("Supabase PostgreSQL (Pooler)")]
+    Logic -.-> AI["Optional Cloud LLM (Gemini / OpenAI)"]
 ```
 
 ### Architectural Decisions
@@ -121,7 +115,7 @@ FixFlow includes a project-authored automated security test suite covering authe
 ### Core Engineering Controls
 - **Stateless HMAC-SHA256 Sessions**: Cryptographically signed edge cookies; tamper-evident and expiration-checked without database overhead.
 - **scrypt Key Derivation**: Passwords hashed using native `crypto.scryptSync` (16-byte random salt, N=16384) with constant-time verification (`crypto.timingSafeEqual`).
-- **Strict Multi-Tenant Isolation**: 100% of Prisma queries explicitly scoped with `userId` predicates to prevent cross-account access.
+- **User-Scoped Queries**: Prisma queries enforce tenant isolation by scoping records to the authenticated session's `userId`.
 - **Magic-Byte Upload Inspection**: Validates genuine file signatures for PNG, JPG, and PDF uploads to prevent MIME spoofing.
 - **Path-Traversal Neutralization**: Normalized path handling prevents directory traversal on attachment endpoints.
 - **Sliding-Window Rate Limiting**: In-memory rate limiting applied to login, registration, and extraction routes.
