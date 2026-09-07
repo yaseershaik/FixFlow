@@ -1,4 +1,4 @@
-﻿# FixFlow
+# FixFlow
 
 A privacy-first consumer grievance tracking platform that helps users document complaints, track response deadlines, organize evidence, and prepare escalation-ready legal notices.
 
@@ -40,7 +40,7 @@ Key details like reference numbers, promised resolution dates, and agent commitm
 
 ## Why I Built It
 
-I built FixFlow to explore how a real-world consumer problem could be converted into a structured software system—from capturing unstructured complaint data to tracking deadlines, protecting user data, and generating actionable escalation documents.
+I built FixFlow to explore how a real-world consumer problem could be converted into a structured software system—from capturing unstructured complaint data to tracking deadlines, protecting user data, and generating actionable escalation documents. It is a production-oriented portfolio project exploring full-stack engineering, security best practices, and AI-assisted product workflows.
 
 ---
 
@@ -50,7 +50,7 @@ FixFlow provides an organized, owner-controlled tracking layer for service dispu
 
 1. **Capture Details**: Log complaints with company name, reference number, purchase date, amount, and promised resolution date.
 2. **Build the Timeline**: Record every call, email, or promise update chronologically with notes and evidence attachments.
-3. **Monitor Deadlines**: Highlight overdue items and track the 2-year limitation window under Section 69 of the Consumer Protection Act, 2019.
+3. **Monitor Deadlines**: Highlight overdue items and track the commonly applicable 2-year limitation window under Section 69 of the Consumer Protection Act, 2019, as an informational reminder.
 4. **Surface Next Actions**: Clear distinction between issues waiting on the company vs. items where user action is required.
 5. **Generate Escalation Notices**: Produce a formal legal demand letter pre-filled with dispute history in one click.
 
@@ -59,12 +59,11 @@ FixFlow provides an organized, owner-controlled tracking layer for service dispu
 ## Key Features
 
 - **Dispute Lifecycle State Machine**: Enforces structured lifecycle transitions (`open` → `waiting` → `action_needed` → `resolved` → `closed`).
-- **Statutory Limitation Advisory (CPA 2019 Section 69)**: Tracks the 2-year limitation period from cause of action to prevent claims from expiring.
+- **Statutory Limitation Advisory**: Tracks the commonly applicable two-year limitation period under Section 69 of the Consumer Protection Act, 2019, as an informational reminder rather than legal advice.
 - **1-Click Legal Notice Generator**: Pre-formats dispute details and relief demanded into a formal notice suitable for company grievance officers, NCH (Dial 1915), or e-Daakhil.
 - **Offline Heuristic Text Extraction**: Regex-based parser extracts merchant names, ticket numbers, dispute amounts, and dates from pasted communication without cloud API latency or cost.
 - **Evidence Management**: Securely attach invoices, repair job-sheets, and screenshots with magic-byte file signature verification.
 - **Search & Quick Filters**: Search complaints across merchant names, docket numbers, and notes with real-time status counters.
-- **SEO & Legal Knowledge Layer**: Includes structured guides on Indian consumer dispute procedures with Schema.org metadata and IndexNow search engine syndication.
 - **Resource Quotas & Demo Sandbox**: Tiered usage limits with automatic 2-hour TTL data cleanup on demo accounts to prevent storage exhaustion.
 
 ---
