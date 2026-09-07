@@ -1,178 +1,135 @@
-﻿# FixFlow — Consumer Grievance & Statutory Dispute Tracker
+﻿# FixFlow
+
+A privacy-first consumer grievance tracking platform that helps users document complaints, track response deadlines, organize evidence, and prepare escalation-ready legal notices.
 
 [![Live Demo](https://img.shields.io/badge/Live_App-getfixflow.vercel.app-10b981?style=for-the-badge&logo=vercel&logoColor=white)](https://getfixflow.vercel.app)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2.15-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Prisma ORM](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![Supabase Postgres](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-[![Vitest](https://img.shields.io/badge/Tests-57%2F57_Passed-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Security Audit](https://img.shields.io/badge/Security-40%2F40_Hardened-blue?style=for-the-badge&logo=shield&logoColor=white)](https://getfixflow.vercel.app)
+[![Tests](https://img.shields.io/badge/Tests-57%2F57_Passed-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **FixFlow is an enterprise-grade, privacy-first consumer grievance tracking and statutory escalation platform tailored for Indian consumers under the Consumer Protection Act, 2019 (CPA 2019).**
+- **Live Application**: [https://getfixflow.vercel.app](https://getfixflow.vercel.app)
+- **GitHub Repository**: [https://github.com/yaseershaik/FixFlow](https://github.com/yaseershaik/FixFlow)
 
-It converts chaotic WhatsApp messages, customer support emails, service job-sheets, and SMS updates into structured, legally defensible timelines, tracks statutory limitation windows, and generates formal legal demand notices ready for **NCH 1915** and **e-Daakhil** consumer commission filings.
-
-🌐 **Production Application**: [https://getfixflow.vercel.app](https://getfixflow.vercel.app)  
-📁 **Source Code**: [https://github.com/yaseershaik/FixFlow](https://github.com/yaseershaik/FixFlow)
-
----
-
-## ⚡ Instant 1-Click Sandbox Demo
-
-Test the live application immediately without registering:
-- **Live URL**: [https://getfixflow.vercel.app/login](https://getfixflow.vercel.app/login)
-- **Demo Email**: `demo@fixflow.app`
-- **Demo Password**: `demo123`  
-*(Or simply click **"Try Live Demo (1-Click)"** on the landing page for instant access)*
+> **Demo Sandbox**: Click *"Try Live Demo (1-Click)"* on the landing page or sign in with `demo@fixflow.app` / `demo123`.  
+> *(Sandbox environment only. Do not enter real personal information. Demo data is automatically purged.)*
 
 ---
 
-## 🖥️ Application Previews & User Flows
+## Screenshots
 
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│  FixFlow — Dashboard & Statutory Dispute Tracker                                       │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│  [OVERDUE ALERT] 🔴 2 Disputes Exceeded Statutory Resolution Window                    │
-│                                                                                        │
-│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
-│  │ ⚡ Flipkart Internet Pvt Ltd — ₹18,499 Refund Dispute                             │  │
-│  │ Status: ESCALATED  |  Ref: OD309823901  |  Promised Date: 5 Days Ago (OVERDUE)   │  │
-│  │ Statutory Action: Section 35 Legal Notice Generated (NCH 1915 Escalation)       │  │
-│  └──────────────────────────────────────────────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────────────────────────────────────────────┐  │
-│  │ ⚡ Airtel Broadband (Bharti Airtel) — Continuous Fiber Outage & SLA Breach        │  │
-│  │ Status: PENDING    |  Ref: AIR-882190  |  Promised Date: Yesterday (OVERDUE)     │  │
-│  │ Statutory Action: TRAI Quality of Service Rebate Notice Pending                 │  │
-│  └──────────────────────────────────────────────────────────────────────────────────┘  │
-│                                                                                        │
-│  [QUICK ACTIONS]                                                                       │
-│  [+ New Complaint]    [📋 Generate Legal Notice]    [⚡ Parse Bill/Email]   [📊 Quotas] │
-│                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+### Dashboard & Active Follow-ups
+Organizes complaints by urgency (Overdue, Action Needed, Waiting, Resolved) with countdowns to promised resolution dates.
+![Dashboard Overview](docs/screenshots/02-dashboard.jpg)
 
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│  Statutory Legal Notice Generator (CPA 2019 / NCH / e-Daakhil)                         │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│  RE: FORMAL LEGAL NOTICE UNDER SECTION 35 OF THE CONSUMER PROTECTION ACT, 2019         │
-│                                                                                        │
-│  To: Grievance Officer, Flipkart Internet Pvt Ltd                                      │
-│  Subject: Deficiency of Service & Unfair Trade Practice — Order #OD309823901           │
-│                                                                                        │
-│  1. That on 12/08/2026, the Complainant purchased an electronics item for ₹18,499...  │
-│  2. That the item received was damaged, returned, and verified by courier on 15/08...  │
-│  3. That despite 4 formal reminders, the refund was arbitrarily withheld...            │
-│  4. DEMAND: Immediate refund of ₹18,499 + ₹5,000 compensation within 15 days...       │
-│                                                                                        │
-│  [📋 Copy Formal Notice]   [⚖️ File on e-Daakhil Portal]   [📞 Dial NCH 1915]           │
-│                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+### Chronological Evidence Timeline
+Tracks the complete interaction history—customer calls, emails, service technician visits, and uploaded proofs—in a single immutable log.
+![Complaint Timeline](docs/screenshots/03-complaint-timeline.jpg)
+
+### Statutory Legal Notice Generator
+Compiles docket history, dates, monetary damages, and statutory violations into an escalation-ready demand notice for NCH 1915 or e-Daakhil filing.
+![Formal Escalation Letter](docs/screenshots/04-escalation-letter.png)
+
+### Landing Page & Consumer Education
+Introduces core complaint-tracking workflows and connects consumers with National Consumer Helpline resources.
+![Landing Page](docs/screenshots/01-landing-page.jpg)
+
+### Mobile Experience
+Fully responsive interface with mobile-optimized navigation and touch-friendly controls.
+![Mobile View](docs/screenshots/05-mobile-view.jpg)
 
 ---
 
-## 🏛️ System Architecture
+## The Problem
 
-FixFlow leverages a modern, decoupled **Next.js App Router** architecture deployed at the **Vercel Edge Network**, connected to a high-performance **Supabase PostgreSQL** database via Prisma ORM connection pooling.
+When consumers face service delays, rejected refunds, or defective goods, communication is usually scattered across WhatsApp messages, emails, SMS alerts, call notes, and customer support tickets. 
+
+Key details like reference numbers, promised resolution dates, and agent commitments are easily forgotten. When companies fail to resolve the issue, consumers lack a clear, organized paper trail to escalate their grievance to nodal officers or consumer redressal forums (such as NCH 1915 or e-Daakhil), often letting valid claims lapse past statutory limitation periods.
+
+---
+
+## What FixFlow Does
+
+FixFlow provides an organized, owner-controlled tracking layer for service disputes:
+
+1. **Capture Details**: Log complaints with company name, reference number, purchase date, amount, and promised resolution date.
+2. **Build the Timeline**: Record every call, email, or promise update chronologically with notes and evidence attachments.
+3. **Monitor Deadlines**: Highlight overdue items and track the 2-year limitation window under Section 69 of the Consumer Protection Act, 2019.
+4. **Surface Next Actions**: Clear distinction between issues waiting on the company vs. items where user action is required.
+5. **Generate Escalation Notices**: Produce a formal legal demand letter pre-filled with dispute history in one click.
+
+---
+
+## Key Features
+
+- **Dispute Lifecycle State Machine**: Enforces structured lifecycle transitions (`open` → `waiting` → `action_needed` → `resolved` → `closed`).
+- **Statutory Limitation Advisory (CPA 2019 Section 69)**: Tracks the 2-year limitation period from cause of action to prevent claims from expiring.
+- **1-Click Legal Notice Generator**: Pre-formats dispute details and relief demanded into a formal notice suitable for company grievance officers, NCH (Dial 1915), or e-Daakhil.
+- **Offline Heuristic Text Extraction**: Regex-based parser extracts merchant names, ticket numbers, dispute amounts, and dates from pasted communication without cloud API latency or cost.
+- **Evidence Management**: Securely attach invoices, repair job-sheets, and screenshots with magic-byte file signature verification.
+- **Search & Quick Filters**: Search complaints across merchant names, docket numbers, and notes with real-time status counters.
+- **SEO & Legal Knowledge Layer**: Includes structured guides on Indian consumer dispute procedures with Schema.org metadata and IndexNow search engine syndication.
+- **Resource Quotas & Demo Sandbox**: Tiered usage limits with automatic 2-hour TTL data cleanup on demo accounts to prevent storage exhaustion.
+
+---
+
+## How It Works
+
+FixFlow uses a modern Next.js App Router architecture deployed on Vercel's global edge network, paired with a Supabase PostgreSQL database via connection pooling.
 
 ```mermaid
-graph TD
-    Client["Client Devices<br/>(Desktop, Tablet, Mobile PWA)"] --> EdgeCDN["Vercel Global Edge Network (CDN)"]
-    
-    subgraph EdgePerimeter ["Security & Edge Boundary"]
-        EdgeCDN --> EdgeMW["Edge Middleware (src/middleware.ts)<br/>• Cryptographic HMAC Token Verification<br/>• Zero-Trust Route Guarding<br/>• Strict Security Headers (CSP, HSTS, X-Frame)"]
-    end
-
-    subgraph AppRouter ["Next.js 14 App Router (Server & Client Components)"]
-        Landing["Landing & Edu Guides<br/>(Static / SSG)"]
-        BlogEngine["SEO Blog Engine (/blog)<br/>• Position #0 FAQPage JSON-LD<br/>• Legal Notice Templates"]
-        AuthModule["Auth Controller (/api/auth/*)<br/>• scrypt Password Hashing (RFC 7914)<br/>• Constant-Time TimingSafeEqual"]
-        GrievanceModule["Grievance Lifecycle Engine (/api/issues/*)<br/>• Statutory Escalation Calculator<br/>• Limitation Period (CPA Sec 69)"]
-        ExtractorModule["Evidence OCR & Heuristics (/api/extract)<br/>• Offline Regex Heuristic Parser<br/>• Zero Cloud Latency / $0 Cost"]
-        UploadModule["Secure File Streamer (/api/uploads/*)<br/>• Magic-Byte File Validation<br/>• Path-Traversal Neutralizer"]
-        QuotaModule["Fair-Use Engine (/api/user/usage)<br/>• Storage Caps & Demo 2-hr Purge"]
-    end
-
-    subgraph DataLayer ["Data & Persistence Layer"]
-        PrismaORM["Prisma Client ORM (Connection Pooler)"]
-        PostgresDB[("Supabase PostgreSQL<br/>Indexed Relational Store")]
-        StorageBucket["Evidence Attachments<br/>(Tenant-Isolated Private Bucket)"]
-    end
-
-    EdgeMW --> Landing
-    EdgeMW --> BlogEngine
-    EdgeMW --> AuthModule
-    EdgeMW --> GrievanceModule
-    EdgeMW --> ExtractorModule
-    EdgeMW --> UploadModule
-    EdgeMW --> QuotaModule
-
-    AuthModule --> PrismaORM
-    GrievanceModule --> PrismaORM
-    QuotaModule --> PrismaORM
-    UploadModule --> StorageBucket
-    PrismaORM --> PostgresDB
+graph LR
+    User["User (Browser / Mobile)"] --> NextApp["Next.js 14 App Router (Vercel Edge)"]
+    NextApp --> EdgeMW["Edge Middleware<br/>(HMAC Session Auth & Security Headers)"]
+    EdgeMW --> Logic["API & Business Logic<br/>(Lifecycles, Quotas, Notice Generator)"]
+    Logic --> DB[("Supabase PostgreSQL<br/>(Prisma Connection Pooler)")]
+    Logic -.-> AI["Optional Cloud AI<br/>(Gemini / OpenAI Fallback)"]
 ```
 
----
-
-## 🌟 Key Features & Engineering Highlights
-
-### 1. Statutory Grievance & Timeline Lifecycle Engine
-- **Consumer Protection Act, 2019 Compliance**: Unlike generic ticket tools, complaints track formal escalation states: `open` → `waiting` → `action_needed` → `resolved` → `closed`.
-- **Statutory Limitation Engine (Section 69)**: Tracks the 2-year limitation period from the date of the cause of action, preventing claims from lapsing before reaching consumer forums.
-- **Chronological Evidence Trail**: Logs calls, emails, customer care interactions, and service visits with immutable timestamps.
-- **Overdue Visual Urgency**: Computes SLA breaches in real-time and highlights critical deadlines with high-contrast alert badges.
-
-### 2. 1-Click Formal Legal Notice Generator
-- Automatically compiles docket numbers, dates, monetary damages, and chronological events into an advocate-grade legal demand notice.
-- Formatted specifically for submission to the **National Consumer Helpline (NCH 1915)** and digital court filings on **e-Daakhil (edaakhil.nic.in)**.
-- Demands principal refunds, statutory interest, and compensation for deficiency in service and mental agony under Section 35 of CPA 2019.
-
-### 3. Local Heuristic & AI Evidence Parser
-- **Offline Heuristic Regex Engine**: Built-in, zero-latency extraction parses messy emails, SMS, and WhatsApp chats to extract company names, tracking IDs, dispute amounts, and promised resolution dates.
-- **Privacy-First ($0 Operational Cost)**: Sensitive financial documents and dispute details are processed locally without mandatory third-party AI cloud fees.
-- **Pluggable LLM Hooks**: Optional adapters for Google Gemini and OpenAI for unstructured document understanding.
-
-### 4. Fair-Use Quota & Resource Management
-- **Tiered Fair-Use Enforcement**: Protects database and storage health with configurable tier limits (25 disputes for standard accounts, 5 for demo sandbox, 50MB storage allocation, 5 attachments per issue).
-- **Ephemeral Sandbox TTL Clean-up**: Automatically purges user-created sample complaints in demo accounts older than **2 hours** via `cleanupExpiredDemoData()`.
-- **Usage Telemetry Dashboard**: Live interactive progress meters in `/settings` displaying real-time metrics for storage, dispute quotas, and statutory retention notices.
-
-### 5. Position #0 SEO & Knowledge Platform
-- **Comprehensive Legal Library (`/blog`)**: Five high-volume, authoritative legal guides targeting top search queries in India (e-commerce refund delays, broadband outages, warranty claims, legal notice formats, and e-Daakhil filing).
-- **Schema.org Rich Snippets**:
-  - `FAQPage` Schema: Embeds interactive FAQ accordions directly into Google SERPs to capture Position #0.
-  - `Article` & `BlogPosting` Schema: Google-compliant structured publication metadata.
-  - `BreadcrumbList` Schema: Clean URL hierarchy display.
-- **IndexNow Protocol**: Automated submission script (`npm run submit:indexing`) pushing updated URLs directly to Bing, Yandex, Seznam, and Naver with `HTTP 202 Accepted`.
+### Architectural Decisions
+- **Edge Token Verification**: HMAC-SHA256 session signatures are verified at the Edge runtime with Web Crypto APIs before requests hit database layers.
+- **IPv4 Connection Pooling**: Routes serverless queries through Supabase's transaction pooler (port 6543) to guarantee reliable connectivity across serverless environments.
+- **Hybrid Rendering**: Statically pre-rendered educational and legal guides (`SSG`) for fast load times, combined with authenticated server-rendered routes (`SSR`) for private dispute management.
 
 ---
 
-## 🔒 Security Architecture & Penetration Hardening
+## Tech Stack
 
-FixFlow was rigorously audited and passed **40 out of 40 automated penetration tests**:
-
-| Security Domain | Defense Mechanism | Standard / Specification |
-|---|---|---|
-| **Password Hashing** | Native `crypto.scryptSync` with 16-byte random salt, N=16384, r=8, p=1 | RFC 7914 Standard |
-| **Timing Attack Shield** | Constant-time credential comparison with `crypto.timingSafeEqual` | Side-channel resistant |
-| **Session Integrity** | Stateless HMAC-SHA256 signed tokens with edge cryptographic validation | Web Crypto API at Edge |
-| **Cookie Hardening** | `HttpOnly`, `SameSite=lax`, `Secure` (HTTPS-only in production) | OWASP Session Security |
-| **Multi-Tenant Isolation** | Strict `userId` scoping on 100% of Prisma database queries | Zero cross-tenant leakage |
-| **File Traversal Defense** | Normalized path validation and stripping of `..` segments | Path traversal neutralization |
-| **MIME Validation** | Magic-byte file signature validation (PNG, JPG, PDF) | Neutralizes malicious polyglots |
-| **Rate Limiting** | Sliding-window memory rate limiting on login, register, and extraction | Neutralizes brute-force attacks |
-| **HTTP Security Headers** | CSP, HSTS (`max-age=63072000`), X-Frame-Options (`DENY`), nosniff | Enterprise A+ Grade |
+| Layer | Technologies |
+|---|---|
+| **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Lucide Icons |
+| **Backend** | Next.js Route Handlers, Edge Middleware |
+| **Database & ORM** | PostgreSQL (Supabase), Prisma ORM (Connection Pooler) |
+| **Authentication** | Stateless HMAC-SHA256 session cookies, scrypt (RFC 7914) password hashing |
+| **AI / Heuristics** | Built-in offline regex parser; optional adapters for Google Gemini and OpenAI |
+| **Testing** | Vitest, Node.js HTTP test suites |
+| **Deployment** | Vercel (Edge Network) |
 
 ---
 
-## 🚀 Quickstart (Local Development)
+## Security & Verification
+
+FixFlow includes a project-authored automated security test suite covering authentication, authorization, user isolation, session handling, input validation, upload validation, path traversal protection, rate limiting, and related attack vectors.
+
+- **57 / 57 Vitest unit and integration tests passing**
+- **40 / 40 project-authored automated security test cases passing**
+- **0 TypeScript compilation errors** (`npx tsc --noEmit`)
+- **Production build verified** (`npm run build`)
+
+### Core Engineering Controls
+- **Stateless HMAC-SHA256 Sessions**: Cryptographically signed edge cookies; tamper-evident and expiration-checked without database overhead.
+- **scrypt Key Derivation**: Passwords hashed using native `crypto.scryptSync` (16-byte random salt, N=16384) with constant-time verification (`crypto.timingSafeEqual`).
+- **Strict Multi-Tenant Isolation**: 100% of Prisma queries explicitly scoped with `userId` predicates to prevent cross-account access.
+- **Magic-Byte Upload Inspection**: Validates genuine file signatures for PNG, JPG, and PDF uploads to prevent MIME spoofing.
+- **Path-Traversal Neutralization**: Normalized path handling prevents directory traversal on attachment endpoints.
+- **Sliding-Window Rate Limiting**: In-memory rate limiting applied to login, registration, and extraction routes.
+- **Defense-in-Depth Headers**: Injected via Edge Middleware: `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security`, and `Referrer-Policy`.
+
+---
+
+## Local Development
 
 ### 1. Clone & Install
 ```bash
@@ -182,11 +139,11 @@ npm install
 ```
 
 ### 2. Configure Environment
-Create a `.env` file (see `.env.example`):
+Create a `.env` file based on `.env.example`:
 ```ini
-DATABASE_URL="postgresql://postgres:[PASSWORD]@[HOST]:5432/postgres"
-DIRECT_URL="postgresql://postgres:[PASSWORD]@[HOST]:5432/postgres"
-SESSION_SECRET="your-64-character-random-secret-key-here"
+DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?sslmode=require&pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres?sslmode=require"
+SESSION_SECRET="your-64-character-random-secret-key"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
@@ -197,50 +154,48 @@ npm run prisma:push
 npm run db:seed
 ```
 
-### 4. Start Development Server
+### 4. Start the Application
 ```bash
 npm run dev
 ```
-Visit [http://localhost:3000](http://localhost:3000) and log in with `demo@fixflow.app` / `demo123`.
+Open [http://localhost:3000](http://localhost:3000) and sign in with `demo@fixflow.app` / `demo123`.
 
 ---
 
-## 🧪 Test Suite
-
-FixFlow includes an automated testing suite powered by Vitest:
+## Testing
 
 ```bash
-# Run all 57 automated unit, integration, and security tests
-npm run test
+# Run the complete test suite (57 automated tests)
+npm test
 ```
 
-### Test Coverage:
-- `tests/quotas.test.ts` (7 tests): Complaint quotas, storage caps, timeline event limits, demo 2-hour TTL cleanup.
-- `tests/security.test.ts` (9 tests): Password hashing, session tampering prevention, ownership boundary isolation.
-- `tests/extraction.test.ts` (19 tests): 16 real-world messy customer communication messages tested against guardrails.
-- `tests/lifecycle.test.ts` (10 tests): Statutory state transitions, overdue date calculation, priority ranking.
-- `tests/ml.test.ts` (4 tests): Lexical urgency index, cosine similarity duplicate check.
-- `tests/validation.test.ts` (5 tests): Input sanitization and bounds.
-- `tests/notifications.test.ts` (3 tests): Overdue alert dispatching.
+---
+
+## Project Structure
+
+```text
+FixFlow/
+├── docs/
+│   └── screenshots/         # Application screenshots
+├── prisma/
+│   └── schema.prisma        # Database schema & indexes
+├── public/                  # Static assets & verification files
+├── scripts/                 # Database seed & test utilities
+├── src/
+│   ├── app/                 # Next.js App Router (pages & API routes)
+│   │   ├── api/             # Auth, complaints, attachments, export, extraction
+│   │   ├── blog/            # Pre-rendered consumer rights guides
+│   │   ├── dashboard/       # Dispute overview & quick filters
+│   │   ├── issues/          # Complaint details, timeline, and notice generator
+│   │   └── settings/        # Account settings & usage telemetry
+│   ├── components/          # Reusable UI components & providers
+│   ├── lib/                 # Auth, DB client, quotas, extraction heuristics
+│   └── middleware.ts        # Edge security & route protection
+└── tests/                   # Vitest unit, lifecycle, and security test suites
+```
 
 ---
 
-## 🎯 Core Technical Achievements
+## License
 
-Key architectural and engineering implementations powering FixFlow:
-
-### **FixFlow — Consumer Grievance & Statutory Dispute Tracker**
-*Next.js 14 App Router, TypeScript, Prisma ORM, PostgreSQL (Supabase), Tailwind CSS, Vitest*  
-**Live Application**: [https://getfixflow.vercel.app](https://getfixflow.vercel.app) | **Repository**: [https://github.com/yaseershaik/FixFlow](https://github.com/yaseershaik/FixFlow)
-
-- **Full-Stack Statutory Engine**: Architected a production-ready consumer grievance management platform under the **Consumer Protection Act, 2019**, converting messy support communications into court-ready dispute timelines with automated 1-click legal demand notices for **NCH 1915** and **e-Daakhil**.
-- **Edge Security & Cryptographic Auth**: Engineered a zero-trust Edge Middleware boundary enforcing stateless **HMAC-SHA256** session validation, **scrypt (RFC 7914)** password key derivation, constant-time comparisons (`timingSafeEqual`), and enterprise HTTP security headers (CSP, HSTS, X-Frame).
-- **Edge Heuristics & Local OCR**: Designed an offline regex heuristic parser extracting tracking IDs, dispute amounts, and promised dates with 0ms cloud latency and $0 operational cost, backed by pluggable cloud LLM adapters.
-- **Fair-Use Multi-Tenancy & Data Lifecycle**: Implemented tiered resource limits (storage caps, timeline quotas, AI extraction rates) and an automated 2-hour TTL purging mechanism for sandbox demo accounts.
-- **High-Ranking SEO Engine**: Built a pre-rendered (`SSG`) legal blog architecture with Schema.org **`FAQPage`** rich snippets, dynamic sitemaps, and **IndexNow** search engine syndication for instant indexing.
-- **Rigorous Verification**: Maintained **100% test pass rate** across **57 Vitest unit tests** and **40 live HTTP penetration vectors** with 0 TypeScript compilation errors.
-
----
-
-## 📄 License
-MIT License © 2026 FixFlow. Built for Indian consumers.
+MIT License — Copyright (c) 2026 Yaseer Shaik
